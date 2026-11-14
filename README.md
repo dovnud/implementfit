@@ -14,5 +14,11 @@ Checked 2026-11-14. Figures are verified only where a file says so. Search volum
 | [research/affiliates.md](research/affiliates.md) | Programs, rates, and cookies, verified from the merchant page or left unverified |
 | [research/plan.md](research/plan.md) | Architecture, the 25-page test, monetization, safety rules, and the red team |
 | [research/verdict.md](research/verdict.md) | NSC score and the RDAP checks |
+| [research/data/models.csv](research/data/models.csv) | Per-model specs with a verified or unverified flag on every field |
+| [research/data/models-notes.md](research/data/models-notes.md) | What was opened, what conflicted, what is still blank |
+| [research/data/fluids-and-filters.md](research/data/fluids-and-filters.md) | Where filter numbers and fluid specs can be taken from, and where they cannot |
+| [research/data/attachments.csv](research/data/attachments.csv) | Maker-stated implement ranges, or an explicit unverified row |
+| [research/adsense.md](research/adsense.md) | Google’s own approval rules, and why page count is not one of them |
+| [research/full-launch-plan.md](research/full-launch-plan.md) | One-release blueprint, red team, and the revision |
 
 The recommended next step is in `research/plan.md` under “Revised plan,” and in one paragraph in `research/verdict.md`.
