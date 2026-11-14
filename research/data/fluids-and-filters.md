@@ -37,6 +37,19 @@ There is no open, machine-readable OEM filter file for this whole catalog that t
 
 Google suggestions for “1025r oil filter” and “kubota oil filter” include part-number-shaped strings. Those strings are not OEM records. They are not in `models.csv` and they must not be published.
 
+## Twenty models checked for a public filter number
+
+The twenty models treated as the first maintenance set are the ones that already have a verified PTO and that match the suggestion and brochure work: 1025R, 1023E, 2025R, 2032R, 2038R, BX2380, BX2680, L2502, L3902, LX2610, CS2510H, CK2640, NX4510, MT226, MT125, Workmaster 25S, GC1725M, 1835M, SA424, and T264.
+
+| Model | What was opened | Filter or capacity result |
+| --- | --- | --- |
+| 1025R and 1023E | Deere filter overview, February 2019, `https://www.deere.com/assets/pdfs/common/parts-and-service/manuals-training/1E%20and%201R%20Series%20Compact%20Utility%20Tractors%20-%201023E,%201025R,%201026R.pdf` and the January 2024 replacement-parts guide `https://www.deere.com/assets/pdfs/common/qrg/rpg-1025r-cut-ww-edition.pdf` | Oil filter M806418 on both documents. Hydraulic filter LVA16054 on both. The 2019 overview also lists fuel filter M801101 and inline fuel filter AM116304. The 2024 guide, for PIN HJ100001 and up, lists fuel filter MIU804763 and the same inline filter AM116304, and it splits the primary air filter at serial JJ153036 (M131802, then LVU34503). Engine oil in the 2024 guide is Plus-50 II 10W-30, 2.9 qt with filter. Transmission oil is Low Viscosity Hy-Gard, 12.9 qt. The two Deere documents do not name the same fuel filter. Publish both, with the document and the serial note. Do not pick one. |
+| BX2380 | Kubota’s own parts page `https://shop.kubotausa.com/oemparts/a/kub/60a30edc87a866105438cb2b/000600-oil-filter` | Engine oil filter HH150-32430 through serial 4NDZ999, and HH1J0-32430 from 4NE0001. A different frequently-used-parts page also lists HHK20-36990 against a replacement engine. That second number is not entered as the tractor’s filter. |
+| T264 and T394 | The same TYM brochures used for the spec rows | Capacities only. T264: fuel 6.6 gal, coolant 5.9 qt, crankcase 4.5 qt, transmission/hydraulics 4.7 gal. T394: fuel 9.0 gal, coolant 7.4 qt, crankcase 6 qt, transmission/hydraulics 8.5 gal. No filter part numbers. |
+| 2025R, 2032R, 2038R, BX2680, L2502, L3902, LX2610, CS2510H, CK2640, NX4510, MT226, MT125, Workmaster 25S, GC1725M, 1835M, SA424 | No public operator-manual filter table or OEM parts hit was opened in this pass | Filter numbers stay unverified. Several of these brochures do contain fuel or oil capacities; those can be copied from the spec row only when that brochure states them. |
+
+Fifteen of the twenty still have no verified filter part number. That is the maintenance bottleneck. The two Deere documents already disagree on the 1025R fuel filter, which is why a serial note has to travel with the number.
+
 ## Launch consequence
 
 Maintenance pages cannot all be filled before someone does the manual pass. A page with only a fuel-tank capacity from a brochure is a start. A page with invented filter numbers is a defect. The full-launch plan publishes a maintenance URL only when at least one fluid fact is verified, and it shows empty filter rows as “not in the document we read.”

@@ -8,7 +8,7 @@ The red-team section attacks this plan. The revised plan under it is the one to 
 
 ## What can be published on day one, from the files in `research/data`
 
-`models.csv` has 102 rows. About 80 of them are individual variants with a verified PTO figure. Thirteen rows are explicit gaps (2 Series, NX, Case IH, Branson, TYM, Bobcat, RK, and others) with every spec unverified. Loader lift is verified on about 10 rows. Weight is verified on about 14. Filter part numbers are not in the brochures. See `fluids-and-filters.md`.
+`models.csv` has 124 rows after the rendered-page pass. About 111 individual variants have a verified PTO figure. Loader lift is verified on 17 rows. Weight is verified on 47. Filter part numbers are verified only for the John Deere 1023E/1025R pair and the Kubota BX2380 oil filter, and the two Deere documents disagree on the 1025R fuel filter. See `fluids-and-filters.md` and `models-notes.md`.
 
 A full launch that only shows verified cells is already a large site. It is not yet the entire US catalog. The production gate below is how the rest gets in before the single release, without a public half-site.
 
@@ -150,21 +150,21 @@ Schema on the about page: `Organization` with a `contactPoint` email. No `Person
 
 Two counts. The ceiling is the single release after the remaining official sheets are read. The floor is what the current CSV can support without inventing a cell. The public launch is one event. It is the ceiling if the production pass finishes, and it must not drop below the floor by padding.
 
-| Type | Floor, from documents already opened | Ceiling, after the missing sheets and manuals are read | FitTractor sitemap, for scale only |
+| Type | Floor, from documents opened through this pass | Ceiling, after the missing sheets and manuals are read | FitTractor sitemap, for scale only |
 | --- | ---: | ---: | ---: |
-| Model | 80 | 160 | 190 |
-| Maintenance | 25, where a brochure capacity exists | 120, where a manual was opened | 0 |
+| Model | 111 | 170 | 190 |
+| Maintenance | 30, where a brochure capacity or a verified filter exists | 120, where a manual was opened | 0 |
 | Attachment type | 8 | 15 | about 13 category URLs |
-| Attachment product | 8 | 50, maker-stated only | 136 SKUs |
-| Brand hub | 8 | 14 | 14 |
-| Comparison | 12 | 30 | a handful of guides |
+| Attachment product | 9 verified products | 50, maker-stated only | 136 SKUs |
+| Brand hub | 9 | 14 | 14 |
+| Comparison | 16 | 30 | a handful of guides |
 | Sizing guide | 8 | 8 | overlapping guides |
-| Problem or FAQ | 4 sitewide, plus serial pages only where a manual is open | 20 | several how-to guides |
+| Problem or FAQ | 4 sitewide | 20 | several how-to guides |
 | Trust | 8 | 8 | several policy URLs |
 | Fit tool | 1 | 1 | 1 calculator |
-| **Total** | **162** | **426** | **415** |
+| **Total** | **204** | **436** | **415** |
 
-The ceiling is slightly above 415 and is heavier on maintenance, measurement, and citations. It is lighter on SKU pages. That is the depth difference. Hitting 426 by adding unverified models would erase it.
+The ceiling is 436. It is heavier on maintenance, measurement, and citations than FitTractor’s 415 URLs, and lighter on SKU pages. The attachment-product ceiling of 50 is not met yet: nine products are verified. Filling that cell with unsourced SKUs would erase the depth difference.
 
 The floor is not a public “test batch.” It is the minimum honest site. The owner’s launch is the ceiling, published once, after the gap rows in `models.csv` are either verified or explicitly dropped.
 
@@ -272,7 +272,7 @@ What changed after the red team:
 - A URL ships only with a verified fact and a short original note. Gap rows do not become pages.
 - Maintenance pages ship when a capacity or a manual spec exists, not as 160 blanks.
 - Fit results and extra filter combinations are not indexed.
-- Dealer-hosted Deere figures stay labeled, and the 2 Series is absent until a Deere file is opened.
+- Dealer-hosted Deere 3 and 4 Series figures stay labeled. The 2 Series now comes from Deere’s own brochure.
 - AdSense is applied after the cutover, on the finished site, with the privacy policy already live. Page count is not the tactic.
 - The cutover waits for the spot check. A wrong PTO cell delays the launch. That is the point of doing it in one go: the first impression is the whole site, so the whole site has to be checkable.
 - Conflicts already known (L2502, CS2510H lift, 1600 lift, 4066M gear PTO, 3046R PTO) are either shown as conflicts or omitted. They are not resolved by averaging.
@@ -280,8 +280,8 @@ What changed after the red team:
 ## What is needed before a build starts
 
 1. Accept this gate: no page for an unverified cell, even if that holds the count down.
-2. Finish the visual read of the scrambled tables: Mahindra 2600 per tractor, Kioti SE PTO row, John Deere 4 Series page 15, Land Pride 60-inch and 72-inch horsepower columns, L2502 against both Kubota documents.
-3. Download the missing official sheets listed as gap rows. Do not fill them from FitTractor or TractorData.
+2. The rendered-page pass closed Mahindra 2600, John Deere page 15, the Land Pride horsepower columns, and the two L2502 documents. Still open: the 4066M and 4066R gear cell that prints 58 (53.2), the CS2510H lift swap, the 1600 brochure-versus-HTML lift, and the Kioti SE PTO row that was not re-rendered.
+3. Still missing official sheets for Case IH Farmall A/C, the rest of New Holland, Branson, Bobcat CT, RK, Massey 1700M, the rest of TYM and LS, the rest of Kioti NX, and Mahindra 4500. Do not fill them from FitTractor or TractorData. Attachment product pages are at 9 verified, not 50.
 4. Decide the domain and create `contact@` that domain. Re-check RDAP the same day. The 2026-11-14 results in `verdict.md` are already stale as a reservation.
 5. Implement the CSV as the only spec source in the Astro content collection, with the template dropping non-verified fields.
 6. Write the eight trust pages, including the privacy language Google lists, before any ad tag.
