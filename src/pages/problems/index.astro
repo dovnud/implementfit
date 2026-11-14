@@ -1,0 +1,17 @@
+---
+import Base from "../../layouts/Base.astro";
+import { problems } from "../../content/guides.mjs";
+---
+<Base
+  title="Questions the sheets actually answer"
+  description="Short answers tied to the documents already read. No forum repair procedures."
+  crumbs={[{ name: "Home", href: "/" }, { name: "Questions", href: "/problems/" }]}
+>
+  <h1>Questions</h1>
+  <p>These pages answer questions the source documents support. They do not list common failures, and they do not tell anyone to bypass a switch.</p>
+  <ul>
+    {problems.map((item) => (
+      <li><a href={`/problems/${item.slug}/`}>{item.title}</a></li>
+    ))}
+  </ul>
+</Base>

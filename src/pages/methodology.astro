@@ -1,0 +1,22 @@
+---
+import Base from "../layouts/Base.astro";
+---
+<Base title="Methodology" description="How a spec cell is marked verified, and which cells are refused." crumbs={[{ name: "Home", href: "/" }, { name: "Methodology", href: "/methodology/" }]}>
+  <h1>Methodology</h1>
+  <p>
+    A status that begins with VERIFIED is rendered. Any other status is omitted, except a conflict status, which is shown as a conflict and not as a chosen number.
+    The template does not average two documents and does not invent a missing loader model.
+  </p>
+  <p>
+    Horsepower pairs are kept as printed. Mechanical horsepower and metric PS are not treated as the same unit.
+    The 4066M gear cell prints 58 (53.2). That pair does not match either conversion, so the page says so.
+    The Kubota L2502 has two published PTO pairs. Both stay.
+  </p>
+  <p>
+    Hitch phrases are not normalized. Limited Category 1 is not stored as Category 1.
+    Lift numbers keep the measurement point when the document names one.
+  </p>
+  <p>
+    Dealer-hosted John Deere files are labeled as dealer-hosted. Filter numbers come from Deere or Kubota documents, not from a third-party cross-reference chart.
+  </p>
+</Base>

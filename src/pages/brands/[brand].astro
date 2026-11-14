@@ -1,0 +1,38 @@
+---
+import Base from "../../layouts/Base.astro";
+import { loadCatalog } from "../../../scripts/catalog.mjs";
+
+export function getStaticPaths() {
+  return loadCatalog().brands.map((brand) => ({
+    params: { brand: brand.slug },
+    props: { brand },
+  }));
+}
+const { brand } = Astro.props;
+const series = [...new Set(brand.models.map((model) => model.series))];
+---
+<Base
+  title={`${brand.name} compact tractors`}
+  description={`Verified ${brand.name} models in this release, grouped by the series name on the source row.`}
+  crumbs={[{ name: "Home", href: "/" }, { name: "Brands", href: "/brands/" }, { name: brand.name, href: brand.path }]}
+>
+  <h1>{brand.name}</h1>
+  <p class="lede">
+    {brand.models.length} {brand.name} model pages are live. Each one links the document the number came from.
+    Series labels are the series text stored with the row, not a marketing history of the company.
+  </p>
+  {series.map((name) => (
+    <section>
+      <h2>{name}</h2>
+      <ul>
+        {brand.models.filter((model) => model.series === name).map((model) => (
+          <li>
+            <a href={model.path}>{model.name}</a>
+            {model.maintenancePath && <> · <a href={model.maintenancePath}>filters and fluids</a></>}
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+  <p>Compare pages that include {brand.name} are listed on <a href="/compare/">the comparison index</a>.</p>
+</Base>

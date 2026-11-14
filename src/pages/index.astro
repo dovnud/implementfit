@@ -1,0 +1,51 @@
+---
+import AdSlot from "../components/AdSlot.astro";
+import Base from "../layouts/Base.astro";
+import { siteConfig } from "../site";
+import { loadCatalog } from "../../scripts/catalog.mjs";
+
+const catalog = loadCatalog();
+const description = "Cited PTO horsepower, hitch category, and lift figures for US compact and sub-compact tractors. Unverified cells are left off the page.";
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: siteConfig.name,
+  url: siteConfig.url,
+  email: siteConfig.contactEmail,
+  contactPoint: {
+    "@type": "ContactPoint",
+    email: siteConfig.contactEmail,
+    contactType: "editorial",
+  },
+};
+---
+<Base title={`${siteConfig.name} — cited compact tractor specs`} description={description} jsonLd={jsonLd}>
+  <h1>Specs you can trace to a document</h1>
+  <p class="lede">
+    ImplementFit publishes PTO horsepower, hitch category, lift, weight, and transmission only when a manufacturer document was read and the cell was marked verified.
+    Conflict cells stay visible as conflicts. They are not averaged.
+  </p>
+  <AdSlot />
+  <p>
+    {catalog.models.length} model pages are in this release, drawn from the research tables.
+    The <a href="/fit/">fit check</a> compares a verified tractor PTO and hitch with a verified attachment range.
+    It answers “inside the published range” or “cannot tell.”
+  </p>
+  <h2>Brands</h2>
+  <div class="grid">
+    {catalog.brands.map((brand) => (
+      <a class="card" href={brand.path}>
+        <strong>{brand.name}</strong>
+        <p>{brand.models.length} models with a verified cell</p>
+      </a>
+    ))}
+  </div>
+  <h2>Start here</h2>
+  <ul>
+    <li><a href="/sizing/limited-category-1/">What Limited Category 1 means on the sheets we read</a></li>
+    <li><a href="/sizing/gear-vs-hst-pto/">Why gear and HST PTO horsepower differ</a></li>
+    <li><a href="/sizing/loader-vs-fork/">Loader lift is not fork capacity</a></li>
+    <li><a href="/attachments/rotary-cutter/">Rotary cutters with a published horsepower range</a></li>
+    <li><a href="/methodology/">How a cell earns the word verified</a></li>
+  </ul>
+</Base>

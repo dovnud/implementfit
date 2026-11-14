@@ -1,0 +1,21 @@
+---
+import Base from "../layouts/Base.astro";
+import { loadCatalog } from "../../scripts/catalog.mjs";
+const catalog = loadCatalog();
+const sources = new Map();
+for (const model of catalog.models) {
+  sources.set(model.sourceUrl, { title: model.sourceTitle, checked: model.checked, count: (sources.get(model.sourceUrl)?.count || 0) + 1 });
+}
+for (const product of catalog.products) {
+  if (!sources.has(product.sourceUrl)) sources.set(product.sourceUrl, { title: product.sourceTitle, checked: product.checked, count: 1 });
+}
+---
+<Base title="Sources" description="Documents cited by the model and attachment pages." crumbs={[{ name: "Home", href: "/" }, { name: "Sources", href: "/sources/" }]}>
+  <h1>Sources</h1>
+  <p>Every model page links one document. This index lists those documents and the date the row was checked. It is generated from the same tables as the pages.</p>
+  <ul>
+    {[...sources.entries()].map(([url, source]) => (
+      <li><a href={url}>{source.title}</a> — checked {source.checked}</li>
+    ))}
+  </ul>
+</Base>

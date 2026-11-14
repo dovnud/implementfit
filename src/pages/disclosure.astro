@@ -1,0 +1,20 @@
+---
+import Base from "../layouts/Base.astro";
+import { siteConfig } from "../site";
+---
+<Base title="Affiliate disclosure" description="Which retailer programs are verified, and that links are off in this build." crumbs={[{ name: "Home", href: "/" }, { name: "Affiliate disclosure", href: "/disclosure/" }]}>
+  <h1>Affiliate disclosure</h1>
+  <p>
+    Affiliate links are turned {siteConfig.affiliatesEnabled ? "on" : "off"} in this build.
+    While they are off, pages do not carry retailer tracking links.
+  </p>
+  <p>
+    Amazon Associates is a verified program: the standard commission table lists 3% for Lawn and Garden, Tools, and Outdoors, with a 24-hour session.
+    Titan Attachments states an Impact program and a 30-day cookie, and the same page states both 4% and 5%. The rate is not settled, so Titan links stay off with the rest.
+    Tractor Supply’s public page names Partnerize and does not state a rate. That program is not linked.
+  </p>
+  <p>
+    If links are enabled later, a paid link will be marked with rel sponsored and nofollow, and this page will still say that a commission may be earned.
+    Specs will still come from the manufacturer documents, not from the retailer.
+  </p>
+</Base>

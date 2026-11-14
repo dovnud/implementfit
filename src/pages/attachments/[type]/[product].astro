@@ -1,0 +1,69 @@
+---
+import Base from "../../../layouts/Base.astro";
+import { loadCatalog } from "../../../../scripts/catalog.mjs";
+
+export function getStaticPaths() {
+  return loadCatalog().products.map((product) => ({
+    params: { type: product.typeSlug, product: product.slug },
+    props: { product },
+  }));
+}
+const { product } = Astro.props;
+const rows = [
+  ["Width", product.width],
+  ["Published range", product.hpRange],
+  ["What the range measures", product.hpBasis],
+  ["Hitch", product.hitch],
+  ["Weight", product.weight],
+  ["PTO speed", product.ptoSpeed],
+].filter(([, value]) => value);
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: `${product.maker} ${product.name}`,
+  brand: { "@type": "Brand", name: product.maker },
+  category: product.type,
+  additionalProperty: rows.map(([name, value]) => ({
+    "@type": "PropertyValue",
+    name,
+    value,
+  })),
+};
+---
+<Base
+  title={`${product.maker} ${product.name}`}
+  description={`${product.maker} ${product.name}: ${product.width}, published range ${product.hpRange}.`}
+  crumbs={[
+    { name: "Home", href: "/" },
+    { name: "Attachments", href: "/attachments/" },
+    { name: product.type, href: `/attachments/${product.typeSlug}/` },
+    { name: product.name, href: product.path },
+  ]}
+  jsonLd={jsonLd}
+>
+  <h1>{product.maker} {product.name}</h1>
+  <p class="lede">
+    {product.maker} publishes this {product.name} as a {product.type}. The range below is the maker’s range, not a width derived from a tractor’s engine horsepower.
+  </p>
+  <p class="note">{product.notes}</p>
+  <table class="specs">
+    <tbody>
+      {rows.map(([label, value]) => (
+        <tr>
+          <th scope="row">{label}</th>
+          <td>{value}</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <p class="source">Source: <a href={product.sourceUrl}>{product.sourceTitle}</a>. Checked {product.checked}.</p>
+  <div class="safety">
+    <p>
+      A horsepower range is the maker’s published window. It is not a statement that every tractor inside that window will carry the implement, and it is not a lift rating.
+    </p>
+  </div>
+  <p>
+    <a href={`/attachments/${product.typeSlug}/`}>All {product.type} notes</a> ·
+    <a href="/fit/">Fit check</a>
+  </p>
+</Base>

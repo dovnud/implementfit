@@ -1,0 +1,20 @@
+---
+import Base from "../../layouts/Base.astro";
+import { loadCatalog } from "../../../scripts/catalog.mjs";
+const { models } = loadCatalog();
+---
+<Base
+  title="Compact and sub-compact tractors"
+  description="Model pages generated from verified manufacturer spec cells."
+  crumbs={[{ name: "Home", href: "/" }, { name: "Tractors", href: "/tractors/" }]}
+>
+  <h1>Tractors</h1>
+  <p class="lede">
+    Each link is one model code with at least one verified spec. Series mates stay as separate columns when the brochure printed them that way.
+  </p>
+  <ul>
+    {models.map((model) => (
+      <li><a href={model.path}>{model.brand} {model.name}</a> — {model.series}</li>
+    ))}
+  </ul>
+</Base>

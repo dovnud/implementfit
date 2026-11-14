@@ -1,0 +1,21 @@
+---
+import Base from "../../layouts/Base.astro";
+import { loadCatalog } from "../../../scripts/catalog.mjs";
+const { comparisons } = loadCatalog();
+---
+<Base
+  title="Model comparisons"
+  description="Comparisons whose columns both come from verified source rows."
+  crumbs={[{ name: "Home", href: "/" }, { name: "Compare", href: "/compare/" }]}
+>
+  <h1>Comparisons</h1>
+  <p>
+    A comparison is generated only when every model named in the row exists and has a verified spec.
+    Adding a row to the comparisons table creates a page on the next build. A row that names a missing model is skipped.
+  </p>
+  <ul>
+    {comparisons.map((page) => (
+      <li><a href={page.path}>{page.title}</a></li>
+    ))}
+  </ul>
+</Base>

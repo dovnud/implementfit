@@ -1,0 +1,52 @@
+---
+import Base from "../../../../layouts/Base.astro";
+import { loadCatalog } from "../../../../../scripts/catalog.mjs";
+
+export function getStaticPaths() {
+  return loadCatalog().models
+    .filter((model) => model.maintenance.length)
+    .map((model) => ({
+      params: { brand: model.brandSlug, model: model.slug },
+      props: { model },
+    }));
+}
+const { model } = Astro.props;
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: model.brand, href: `/brands/${model.brandSlug}/` },
+  { name: model.name, href: model.path },
+  { name: "Maintenance", href: model.maintenancePath },
+];
+const description = `Verified filters and fluid capacities for the ${model.brand} ${model.name}, each tied to a source document.`;
+---
+<Base title={`${model.brand} ${model.name} filters and fluids`} description={description} crumbs={crumbs}>
+  <h1>{model.brand} {model.name} filters and fluids</h1>
+  <p class="lede">
+    These rows are the capacities and part numbers opened from a manufacturer document for this model.
+    A filter number is specific to the document and, where the document says so, to a serial break.
+  </p>
+  <p class="note">
+    {model.brand} {model.name} maintenance is limited to what those documents state.
+    Empty topics are omitted. Confirm the number against the parts lookup for your serial before ordering.
+  </p>
+  <table class="specs">
+    <tbody>
+      {model.maintenance.map((item) => (
+        <tr class={item.conflict ? "conflict" : undefined}>
+          <th scope="row">{item.label}</th>
+          <td>
+            <p>{item.value}</p>
+            {item.detail && <p>{item.detail}</p>}
+            <p class="source">
+              Source: <a href={item.sourceUrl}>{item.sourceTitle}</a>. Checked {item.checked}.
+            </p>
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+  <p>
+    Back to the <a href={model.path}>{model.name} spec page</a>.
+    Related reading: <a href="/sizing/horsepower-pairs/">how to read a horsepower pair</a>.
+  </p>
+</Base>

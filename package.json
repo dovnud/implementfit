@@ -1,0 +1,16 @@
+{
+  "name": "implementfit",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev --host 127.0.0.1 --port 4178",
+    "build": "astro build && node scripts/validate-build.mjs",
+    "preview": "astro preview --host 127.0.0.1 --port 4178",
+    "validate": "node scripts/validate-build.mjs"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.6.0",
+    "astro": "^5.15.0",
+    "csv-parse": "^5.6.0"
+  }
+}

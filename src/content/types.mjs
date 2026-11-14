@@ -1,0 +1,76 @@
+export const attachmentTypes = [
+  {
+    slug: "rotary-cutter",
+    title: "Rotary cutters",
+    lede: "A rotary cutter page on this site lists only cutters whose maker published a width and a horsepower range.",
+    body: [
+      "The tractor side of the match is PTO horsepower for the transmission you will use, a 540 rpm rear PTO, and the hitch phrase on the tractor sheet. Limited Category 1 is not rewritten as Category 1.",
+      "Land Pride manual 326-047M, read from the rendered spec page, puts 18–40 hp on the 42-inch RCR1242, a shared 20–60 hp cell on the 48-inch and 60-inch models, and 25–60 hp on the 72-inch RCR1272. Woods BrushBull literature prints separate ranges for the 48, 60, 72, and 84 inch models. Titan’s product page states 20–60 HP tractor power and a 40 HP gearbox rating for the 48 inch standard cutter.",
+      "There is no horsepower-per-inch rule on this page. A width is used only when the maker printed it.",
+    ],
+  },
+  {
+    slug: "box-blade",
+    title: "Box blades",
+    lede: "No box-blade product sheet is verified in the attachment table yet, so this page does not name a width to buy.",
+    body: [
+      "A box blade needs a 3-point hitch the tractor sheet actually names, and enough PTO horsepower only if the blade is not a ground-engaging tool that still depends on tractor weight. The verified tractor rows show Category 1, Category I, Limited Category 1, and Category 1/2 as different phrases.",
+      "Use the John Deere 1025R and 1023E pages when you need a Limited Category 1 example, and the Kubota L3902 page when you need separate gear and HST PTO figures. Those numbers come from the model tables, not from a box-blade catalog.",
+      "CountyLine, King Kutter, and Frontier box-blade specs were not opened. They are not listed as products.",
+    ],
+  },
+  {
+    slug: "pallet-forks",
+    title: "Pallet forks",
+    lede: "Loader lift at the pivot pin is not the capacity of a set of forks.",
+    body: [
+      "The John Deere 2 Series brochure prints loader lift at max height at the pivot: 803 lb on the 2025R and 1,120 lb on the 2032R and 2038R. Massey Ferguson’s US brochure prints FL2611 and FL2814 lifts at the pivot pin and again at 19.5 inches forward of the pin. Moving the load forward of the pin lowers the published figure.",
+      "No pallet-fork maker sheet with a load-center rating is in the attachment table. Until that sheet is added, the fit check cannot put a fork and a tractor in the same range.",
+    ],
+  },
+  {
+    slug: "grapple",
+    title: "Grapples",
+    lede: "A grapple needs a loader, a third hydraulic function, and a lift figure at a named point.",
+    body: [
+      "None of the verified attachment rows is a grapple. Tractor pages that publish a loader lift name the measurement point. Pages that do not publish a loader lift omit it.",
+      "Hydraulic flow is not compared here because most tractor rows in this release do not have a verified remote-flow cell. The fit check returns cannot tell when either side of a comparison is missing.",
+    ],
+  },
+  {
+    slug: "rotary-tiller",
+    title: "Rotary tillers",
+    lede: "A tiller asks for a rear PTO speed and a horsepower range. This catalog does not yet have a tiller sheet.",
+    body: [
+      "Verified tractor rows that state a rear PTO describe 540 rpm. The John Deere 1 Series brochure also lists a mid PTO at 2,100 rpm on the 1023E and 1025R. A mid PTO is not the shaft a rear tiller uses.",
+      "Gear and hydrostatic PTO horsepower differ on models such as the Kubota L3902 and the Kioti CK2640. A tiller range has to be compared with the transmission you will run. No tiller product is verified yet, so no range is printed here.",
+    ],
+  },
+  {
+    slug: "backhoe",
+    title: "Backhoes",
+    lede: "A subframe backhoe and a 3-point backhoe are different tools. Neither has a verified product row yet.",
+    body: [
+      "Tractor pages publish rear lift only at the point the sheet names. That lift is not digging force and not a backhoe’s published bucket force.",
+      "The Massey GC1700 brochure marks a tractor-loader-backhoe package on the EB and MB rows and not on the E and M rows. That is a package flag on the tractor sheet, not a backhoe spec. No backhoe width or horsepower range is stored.",
+    ],
+  },
+  {
+    slug: "ballast-box",
+    title: "Ballast boxes",
+    lede: "This site does not calculate how much ballast to add.",
+    body: [
+      "Published tractor weights are the weights on the source row, such as shipping weight or weight with fluids. They are not a prescription to add weight.",
+      "A ballast box is an implement with its own mass and its own hitch. No ballast-box product sheet is verified. The fit check will not invent a weight, and there is no calculator on this site.",
+    ],
+  },
+  {
+    slug: "mid-mount-mower",
+    title: "Mid-mount mowers",
+    lede: "A mid-mount mower uses the mid PTO speed the tractor sheet names, which is not 540 rpm.",
+    body: [
+      "The John Deere 1 Series brochure lists mid PTO at 2,100 rpm for the 1023E and 1025R, alongside a 540 rpm rear PTO. The Kioti CS2510H page lists mid speed at 2,200 rpm. The Kioti NX4510 page lists an optional mid PTO at 2,000 rpm.",
+      "No mid-mount mower deck has a verified width or horsepower range in the attachment table. Deck width is omitted until a maker sheet is added.",
+    ],
+  },
+];

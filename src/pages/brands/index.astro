@@ -1,0 +1,21 @@
+---
+import Base from "../../layouts/Base.astro";
+import { loadCatalog } from "../../../scripts/catalog.mjs";
+const { brands } = loadCatalog();
+---
+<Base
+  title="Tractor brands"
+  description="Brand hubs list only models that have a verified spec page."
+  crumbs={[{ name: "Home", href: "/" }, { name: "Brands", href: "/brands/" }]}
+>
+  <h1>Brands</h1>
+  <p>A brand appears here when at least one of its models has a verified cell and a source URL. Empty brands are not given a hub.</p>
+  <div class="grid">
+    {brands.map((brand) => (
+      <a class="card" href={brand.path}>
+        <strong>{brand.name}</strong>
+        <p>{brand.models.length} model pages</p>
+      </a>
+    ))}
+  </div>
+</Base>

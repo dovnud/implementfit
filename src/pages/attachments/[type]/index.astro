@@ -1,0 +1,44 @@
+---
+import Base from "../../../layouts/Base.astro";
+import { attachmentTypes } from "../../../content/types.mjs";
+import { loadCatalog } from "../../../../scripts/catalog.mjs";
+
+export function getStaticPaths() {
+  const products = loadCatalog().products;
+  return attachmentTypes.map((type) => ({
+    params: { type: type.slug },
+    props: {
+      type,
+      products: products.filter((item) => item.typeSlug === type.slug),
+    },
+  }));
+}
+const { type, products } = Astro.props;
+---
+<Base
+  title={type.title}
+  description={type.lede}
+  crumbs={[
+    { name: "Home", href: "/" },
+    { name: "Attachments", href: "/attachments/" },
+    { name: type.title, href: `/attachments/${type.slug}/` },
+  ]}
+>
+  <h1>{type.title}</h1>
+  <p class="lede">{type.lede}</p>
+  {type.body.map((paragraph) => <p>{paragraph}</p>)}
+  {products.length > 0 && (
+    <>
+      <h2>Verified products</h2>
+      <ul>
+        {products.map((product) => (
+          <li><a href={product.path}>{product.maker} {product.name}</a> — {product.width}, {product.hpRange}</li>
+        ))}
+      </ul>
+    </>
+  )}
+  <p>
+    Check a tractor against a verified product on the <a href="/fit/">fit check</a>.
+    Width method: <a href="/sizing/rotary-cutter-width/">rotary cutter width</a>.
+  </p>
+</Base>

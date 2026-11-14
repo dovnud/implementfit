@@ -1,0 +1,29 @@
+---
+import Base from "../../layouts/Base.astro";
+import { problems } from "../../content/guides.mjs";
+
+export function getStaticPaths() {
+  return problems.map((item) => ({ params: { slug: item.slug }, props: { item } }));
+}
+const { item } = Astro.props;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: [{
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: { "@type": "Answer", text: item.paragraphs.join(" ") },
+  }],
+};
+---
+<Base
+  title={item.title}
+  description={item.description}
+  crumbs={[{ name: "Home", href: "/" }, { name: "Questions", href: "/problems/" }, { name: item.title, href: `/problems/${item.slug}/` }]}
+  jsonLd={jsonLd}
+>
+  <h1>{item.title}</h1>
+  <h2>{item.question}</h2>
+  {item.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+  <p>Related: <a href="/sizing/horsepower-pairs/">horsepower pairs</a> and <a href="/corrections/">corrections</a>.</p>
+</Base>

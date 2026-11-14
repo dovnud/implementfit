@@ -1,0 +1,88 @@
+---
+import AdSlot from "../../../components/AdSlot.astro";
+import SpecTable from "../../../components/SpecTable.astro";
+import Base from "../../../layouts/Base.astro";
+import { siteConfig } from "../../../site";
+import { loadCatalog } from "../../../../scripts/catalog.mjs";
+
+export function getStaticPaths() {
+  return loadCatalog().models.map((model) => ({
+    params: { brand: model.brandSlug, model: model.slug },
+    props: { model },
+  }));
+}
+
+const { model } = Astro.props;
+const catalog = loadCatalog();
+const seriesMates = catalog.models.filter(
+  (item) => item.brandSlug === model.brandSlug && item.series === model.series && item.slug !== model.slug,
+);
+const comparisons = catalog.comparisons.filter((page) =>
+  page.models.some((item) => item.brandSlug === model.brandSlug && item.slug === model.slug),
+);
+const crumbs = [
+  { name: "Home", href: "/" },
+  { name: "Tractors", href: "/tractors/" },
+  { name: model.brand, href: `/brands/${model.brandSlug}/` },
+  { name: model.name, href: model.path },
+];
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: `${model.brand} ${model.name}`,
+  brand: { "@type": "Brand", name: model.brand },
+  description: model.note.slice(0, 280),
+  additionalProperty: model.fields
+    .filter((field) => !field.conflict)
+    .map((field) => ({
+      "@type": "PropertyValue",
+      name: field.label,
+      value: field.value,
+      unitText: field.note || undefined,
+    })),
+};
+const description = `${model.brand} ${model.name}: verified PTO, hitch, and lift figures from ${model.sourceTitle}, checked ${model.checked}.`;
+---
+<Base title={`${model.brand} ${model.name}`} description={description} crumbs={crumbs} jsonLd={jsonLd}>
+  <h1>{model.brand} {model.name}</h1>
+  <p class="lede">{model.series}. Figures below are the verified cells for this model code. Blank topics were not verified, so they are omitted.</p>
+  <AdSlot />
+  <p class="note">{model.note}</p>
+  <SpecTable fields={model.fields} />
+  <p class="source">
+    Source: <a href={model.sourceUrl}>{model.sourceTitle}</a>. Checked {model.checked}.
+  </p>
+  <h2>How to read this page</h2>
+  <p>
+    Engine power and PTO horsepower are different cells. A gear transmission and a hydrostatic transmission can both be printed, and they are not interchangeable.
+    Hitch words are copied from the document. Limited Category 1 stays Limited Category 1. A lift number is tied to the measurement point in the row.
+    If that point is missing, the number is not treated as comparable to a pallet fork or a grapple.
+  </p>
+  <div class="safety">
+    <p>
+      Rear lift and loader lift on this page are manufacturer figures at the stated point. They are not a load you should add, and they are not a ballast calculation.
+      Confirm the figure against the operator’s manual for your serial number before buying or mounting an implement.
+    </p>
+  </div>
+  <h2>Related pages</h2>
+  <ul>
+    <li><a href={`/brands/${model.brandSlug}/`}>{model.brand} hub</a></li>
+    {model.maintenancePath && <li><a href={model.maintenancePath}>Filters and fluids</a></li>}
+    <li><a href="/fit/">Fit check</a></li>
+    <li><a href="/sizing/limited-category-1/">Limited Category 1</a></li>
+    <li><a href="/sizing/gear-vs-hst-pto/">Gear and HST PTO</a></li>
+    <li><a href="/sizing/loader-vs-fork/">Loader lift and forks</a></li>
+    <li><a href="/sizing/rotary-cutter-width/">Rotary cutter width</a></li>
+    {comparisons.map((page) => <li><a href={page.path}>{page.title}</a></li>)}
+  </ul>
+  {seriesMates.length > 0 && (
+    <>
+      <h2>Other {model.series} rows</h2>
+      <ul>
+        {seriesMates.map((item) => (
+          <li><a href={item.path}>{item.brand} {item.name}</a></li>
+        ))}
+      </ul>
+    </>
+  )}
+</Base>

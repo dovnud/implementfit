@@ -1,0 +1,18 @@
+slug,title,kind,model_a,model_b,model_c,note
+1023e-vs-1025r,John Deere 1023E and 1025R,pair,John Deere|1023E,John Deere|1025R,,Both columns come from the August 2024 1 Series brochure. The 1023E PTO figure is under 15 horsepower. Both hitches are printed as Limited Category 1.
+2025r-vs-2032r,John Deere 2025R and 2032R,pair,John Deere|2025R,John Deere|2032R,,Both columns come from the Deere 2 Series brochure. The 2025R hitch is Limited Category 1. The 2032R hitch is Category 1.
+2032r-vs-2038r,John Deere 2032R and 2038R,pair,John Deere|2032R,John Deere|2038R,,Same 2 Series brochure. Rear lift at 24 inches is printed as 1356 lb on both. PTO horsepower is not the same.
+l3302-gear-and-hst,Kubota L3302 gear and HST,single,Kubota|L3302,,,One model. The 2023 L02 sheet and the 2026 full-line book print separate gear and HST PTO figures and those PTO figures match.
+l3902-gear-and-hst,Kubota L3902 gear and HST,single,Kubota|L3902,,,One model. Gear and HST PTO horsepower are both on the 2023 sheet and match the 2026 book.
+l4802-gear-and-hst,Kubota L4802 gear and HST,single,Kubota|L4802,,,One model. The 2026 book also splits weight by 2WD narrow 4WD gear and 4WD HST.
+ck2640-vs-ck2640h,Kioti CK2640 and CK2640H,pair,Kioti|CK2640,Kioti|CK2640H,,Manual and hydrostatic rows from the same Kioti CK spec sheet.
+ck3540-vs-ck3540h,Kioti CK3540 and CK3540H,pair,Kioti|CK3540,Kioti|CK3540H,,Manual and hydrostatic rows from the same Kioti CK spec sheet.
+ck4040-vs-ck4040h,Kioti CK4040 and CK4040H,pair,Kioti|CK4040,Kioti|CK4040H,,Manual and hydrostatic rows from the same Kioti CK spec sheet.
+emax-22l-gear-vs-hst,Mahindra eMax 22L gear and HST,pair,Mahindra|eMax 22L Gear,Mahindra|eMax 22L HST,,Same eMax brochure. The gear and HST columns do not print the same PTO horsepower.
+1626-hst-vs-shuttle,Mahindra 1626 HST and shuttle,pair,Mahindra|1626 HST,Mahindra|1626 Shuttle,,Same 1600 series brochure.
+gc1723e-vs-gc1725m,Massey Ferguson GC1723E and GC1725M,pair,Massey Ferguson|GC1723E,Massey Ferguson|GC1725M,,Same GC1700 brochure.
+sa221-vs-sa424,Yanmar SA221 and SA424,pair,Yanmar|SA221,Yanmar|SA424,,Same SA brochure. The spec table says Limited Category 1.
+bx1880-bx2380-bx2680,Kubota BX1880 BX2380 and BX2680,triple,Kubota|BX1880,Kubota|BX2380,Kubota|BX2680,Three columns from the 2026 Kubota full-line book. The BX1880 PTO figure is under 15 horsepower.
+nx4510-vs-nx4510h,Kioti NX4510 and NX4510H,pair,Kioti|NX4510,Kioti|NX4510H,,Same published power label and different PTO horsepower from the two Kioti product pages.
+1835m-vs-1840m,Massey Ferguson 1835M and 1840M,pair,Massey Ferguson|1835M,Massey Ferguson|1840M,,Same US 1800M and 2800M brochure. They share the Category I hitch and the FL2611 loader figures.
+mt122-vs-mt125,LS MT122 and MT125,pair,LS Tractor|MT122,LS Tractor|MT125,,Same October 2025 MT1 brochure.

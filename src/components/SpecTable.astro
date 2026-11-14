@@ -1,0 +1,42 @@
+---
+interface Field {
+  key: string;
+  label: string;
+  value: string;
+  note: string;
+  status: string;
+  conflict: boolean;
+}
+interface Props { fields: Field[] }
+const { fields } = Astro.props;
+const liftKeys = new Set(["rear_lift_lb", "loader_lift_lb"]);
+---
+<table class="specs">
+  <caption class="sr-only">Verified specifications</caption>
+  <tbody>
+    {fields.map((field) => (
+      <tr class={field.conflict ? "conflict" : undefined}>
+        <th scope="row">{field.label}</th>
+        <td>
+          <p>{field.value}</p>
+          {field.note && <p>{field.note}</p>}
+          {liftKeys.has(field.key) && (
+            <p>Lift and loader figures are the published number at the stated measurement point. They are not pallet-fork capacity and not a ballast instruction.</p>
+          )}
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+<style>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
+  }
+</style>

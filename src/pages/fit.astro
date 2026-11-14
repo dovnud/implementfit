@@ -1,0 +1,117 @@
+---
+import Base from "../layouts/Base.astro";
+import { loadCatalog } from "../../scripts/catalog.mjs";
+
+const catalog = loadCatalog();
+const tractors = catalog.models
+  .filter((model) => model.fields.some((field) => field.key === "pto_hp") && model.fields.some((field) => field.key === "hitch"))
+  .map((model) => ({
+    id: `${model.brandSlug}/${model.slug}`,
+    label: `${model.brand} ${model.name}`,
+    pto: model.fields.find((field) => field.key === "pto_hp").value,
+    ptoNote: model.fields.find((field) => field.key === "pto_hp").note,
+    hitch: model.fields.find((field) => field.key === "hitch").value,
+    sourceUrl: model.sourceUrl,
+    sourceTitle: model.sourceTitle,
+    checked: model.checked,
+  }));
+const attachments = catalog.products.map((product) => ({
+  id: product.slug,
+  label: `${product.maker} ${product.name}`,
+  range: product.hpRange,
+  hitch: product.hitch,
+  sourceUrl: product.sourceUrl,
+  sourceTitle: product.sourceTitle,
+  checked: product.checked,
+}));
+const payload = JSON.stringify({ tractors, attachments }).replaceAll("<", "\\u003c");
+---
+<Base
+  title="Fit check"
+  description="Compare a verified tractor PTO and hitch with a verified attachment range. Results stay on this page."
+  crumbs={[{ name: "Home", href: "/" }, { name: "Fit check", href: "/fit/" }]}
+>
+  <h1>Fit check</h1>
+  <p class="lede">
+    Pick a tractor and an attachment that already have verified cells. The result is either “inside the published range” or “cannot tell.”
+    Nothing on this page is a promise about a particular serial number.
+  </p>
+  <div class="safety">
+    <p>
+      Loader lift and rear lift are not part of this check unless both measurement points match, and the attachment rows here do not publish a matching lift point.
+      This tool does not calculate ballast.
+    </p>
+  </div>
+  <form class="fit-form" id="fit-form">
+    <label>
+      Tractor
+      <select name="tractor" required>
+        <option value="">Choose a tractor</option>
+        {tractors.map((tractor) => <option value={tractor.id}>{tractor.label}</option>)}
+      </select>
+    </label>
+    <label>
+      Attachment
+      <select name="attachment" required>
+        <option value="">Choose an attachment</option>
+        {attachments.map((item) => <option value={item.id}>{item.label}</option>)}
+      </select>
+    </label>
+    <button type="submit">Check published range</button>
+  </form>
+  <div class="result" id="fit-result" aria-live="polite"></div>
+  <script id="fit-data" type="application/json" set:html={payload}></script>
+  <script>
+    const data = JSON.parse(document.getElementById("fit-data").textContent || "{}");
+    const form = document.getElementById("fit-form");
+    const out = document.getElementById("fit-result");
+
+    function numbersBeforeKw(text) {
+      const found = [];
+      const pattern = /(\d+(?:\.\d+)?)\s*(?:hp)?\s*\([^)]{0,24}kw\)/gi;
+      let match;
+      while ((match = pattern.exec(text))) found.push(Number(match[1]));
+      return found;
+    }
+
+    function hitchClass(text) {
+      const value = text.toLowerCase();
+      if (value.includes("limited")) return "limited";
+      if (/1\s*\/\s*2|i\s*(&|and)\s*ii|1\s+and\s+2/.test(value)) return "both";
+      if (/cat(?:egory)?\.?\s*(ii|2)\b/.test(value) && !/1/.test(value)) return "cat2";
+      if (/cat(?:egory)?\.?\s*(i|1)\b/.test(value)) return "cat1";
+      return "unknown";
+    }
+
+    function hitchCompatible(tractor, attachment) {
+      if (tractor === "unknown" || attachment === "unknown" || tractor === "limited") return false;
+      if (tractor === "both" || attachment === "both") {
+        return tractor !== "unknown" && attachment !== "unknown" && tractor !== "limited";
+      }
+      return tractor === attachment;
+    }
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const tractor = data.tractors.find((item) => item.id === form.tractor.value);
+      const attachment = data.attachments.find((item) => item.id === form.attachment.value);
+      let verdict = "cannot tell";
+      if (tractor && attachment) {
+        const conflicted = /conflict|disagree/i.test(`${tractor.pto} ${tractor.ptoNote}`);
+        const range = attachment.range.match(/(\d+(?:\.\d+)?)\s*[-–]\s*(\d+(?:\.\d+)?)/);
+        const ptos = numbersBeforeKw(tractor.pto);
+        if (!conflicted && range && ptos.length && hitchCompatible(hitchClass(tractor.hitch), hitchClass(attachment.hitch))) {
+          const low = Number(range[1]);
+          const high = Number(range[2]);
+          if (ptos.every((pto) => pto >= low && pto <= high)) verdict = "inside the published range";
+        }
+      }
+      const lines = [
+        verdict,
+        tractor ? `Tractor source: ${tractor.sourceTitle}, checked ${tractor.checked}.` : "",
+        attachment ? `Attachment source: ${attachment.sourceTitle}, checked ${attachment.checked}.` : "",
+      ];
+      out.textContent = lines.filter(Boolean).join(" ");
+    });
+  </script>
+</Base>

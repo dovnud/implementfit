@@ -1,0 +1,17 @@
+---
+import Base from "../../layouts/Base.astro";
+import { guides } from "../../content/guides.mjs";
+---
+<Base
+  title="Sizing guides"
+  description="Measurement guides that cite the verified sheets instead of a universal rule."
+  crumbs={[{ name: "Home", href: "/" }, { name: "Sizing", href: "/sizing/" }]}
+>
+  <h1>Sizing guides</h1>
+  <p>These guides explain measurement points and published ranges. They do not assign a width from a rule of thumb, and they do not calculate ballast.</p>
+  <ul>
+    {guides.map((guide) => (
+      <li><a href={`/sizing/${guide.slug}/`}>{guide.title}</a></li>
+    ))}
+  </ul>
+</Base>

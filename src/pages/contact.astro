@@ -1,0 +1,15 @@
+---
+import Base from "../layouts/Base.astro";
+import { siteConfig } from "../site";
+---
+<Base title="Contact" description="Write to the editorial address. No personal names are published." crumbs={[{ name: "Home", href: "/" }, { name: "Contact", href: "/contact/" }]}>
+  <h1>Contact</h1>
+  <p>
+    Email <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>.
+    That is the only address on the site. {siteConfig.editorialName} read it.
+  </p>
+  <p>
+    If you are writing about a spec, include the document title and the model code.
+    Corrections are listed on the <a href="/corrections/">corrections</a> page after the document is checked.
+  </p>
+</Base>

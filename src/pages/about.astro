@@ -1,0 +1,19 @@
+---
+import Base from "../layouts/Base.astro";
+import { siteConfig } from "../site";
+---
+<Base title="About" description="What ImplementFit publishes, and what it leaves blank." crumbs={[{ name: "Home", href: "/" }, { name: "About", href: "/about/" }]}>
+  <h1>About</h1>
+  <p>
+    {siteConfig.name} is a reference for US compact and sub-compact tractors in roughly the 15 to 75 PTO horsepower band.
+    {siteConfig.editorialName} publish a figure only after a manufacturer document has been read and the cell is marked verified.
+  </p>
+  <p>
+    The site is built from tables in the repository. A new verified row becomes a page on the next build.
+    A row that is still unverified does not become a page. Conflict cells stay visible as conflicts.
+  </p>
+  <p>
+    Contact is <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>.
+    The pages do not name a person.
+  </p>
+</Base>

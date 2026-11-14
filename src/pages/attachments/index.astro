@@ -1,0 +1,26 @@
+---
+import Base from "../../layouts/Base.astro";
+import { attachmentTypes } from "../../content/types.mjs";
+import { loadCatalog } from "../../../scripts/catalog.mjs";
+const products = loadCatalog().products;
+---
+<Base
+  title="Attachments"
+  description="Attachment types and the products whose maker published a width and a horsepower range."
+  crumbs={[{ name: "Home", href: "/" }, { name: "Attachments", href: "/attachments/" }]}
+>
+  <h1>Attachments</h1>
+  <p class="lede">
+    Product pages exist only for rows marked verified. A type page can still explain the tractor-side requirement when no product sheet has been opened.
+  </p>
+  <ul>
+    {attachmentTypes.map((type) => (
+      <li>
+        <a href={`/attachments/${type.slug}/`}>{type.title}</a>
+        {products.filter((item) => item.typeSlug === type.slug).length > 0 && (
+          <> — {products.filter((item) => item.typeSlug === type.slug).length} verified products</>
+        )}
+      </li>
+    ))}
+  </ul>
+</Base>

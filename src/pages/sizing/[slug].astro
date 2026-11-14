@@ -1,0 +1,23 @@
+---
+import Base from "../../layouts/Base.astro";
+import { guides } from "../../content/guides.mjs";
+
+export function getStaticPaths() {
+  return guides.map((guide) => ({ params: { slug: guide.slug }, props: { guide } }));
+}
+const { guide } = Astro.props;
+---
+<Base
+  title={guide.title}
+  description={guide.description}
+  crumbs={[{ name: "Home", href: "/" }, { name: "Sizing", href: "/sizing/" }, { name: guide.title, href: `/sizing/${guide.slug}/` }]}
+>
+  <h1>{guide.title}</h1>
+  <p class="lede">{guide.description}</p>
+  {guide.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+  <p>
+    Model pages: <a href="/tractors/">all tractors</a>.
+    Products: <a href="/attachments/rotary-cutter/">rotary cutters</a>.
+    Check: <a href="/fit/">fit check</a>.
+  </p>
+</Base>

@@ -1,0 +1,25 @@
+---
+import Base from "../layouts/Base.astro";
+import { siteConfig } from "../site";
+---
+<Base title="Privacy" description="How ImplementFit handles pages, email, and advertising cookies." crumbs={[{ name: "Home", href: "/" }, { name: "Privacy", href: "/privacy/" }]}>
+  <h1>Privacy</h1>
+  <p>
+    {siteConfig.name} does not ask you to create an account. The fit check runs in your browser and does not add a result URL.
+    Mail sent to {siteConfig.contactEmail} is read by {siteConfig.editorialName} to answer the message.
+  </p>
+  <h2>Advertising cookies</h2>
+  <p>
+    Advertising is not loaded on this release. The advertisement boxes are empty placeholders.
+    If advertising is turned on later, third-party vendors, including Google, use cookies to serve ads based on prior visits to this site or other sites.
+  </p>
+  <p>
+    Google’s use of advertising cookies enables Google and its partners to serve ads based on visits to this site and other sites.
+    You can opt out of personalized advertising by visiting Google’s Ads Settings.
+    You can also opt out of some third-party vendors’ cookie use for personalized advertising at <a href="https://www.aboutads.info/">www.aboutads.info</a>.
+  </p>
+  <p>
+    Visitors in the EEA, the United Kingdom, and Switzerland would see a consent notice before any advertising cookie is set.
+    No advertising tag is present in this build, so no advertising cookie is set by this site today.
+  </p>
+</Base>
