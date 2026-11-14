@@ -1,6 +1,6 @@
 ---
 import "../styles/global.css";
-import { siteConfig } from "../site";
+import { isPreviewBuild, siteConfig } from "../site";
 
 interface Crumb { name: string; href: string }
 interface Props {
@@ -11,6 +11,7 @@ interface Props {
   noindex?: boolean;
 }
 const { title, description, crumbs = [], jsonLd, noindex = false } = Astro.props;
+const preview = isPreviewBuild();
 const canonical = new URL(Astro.url.pathname, siteConfig.url).href;
 const breadcrumbLd = crumbs.length
   ? {
@@ -35,7 +36,8 @@ const blocks = [breadcrumbLd, jsonLd].flat().filter(Boolean);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    {noindex && <meta name="robots" content="noindex" />}
+    {preview && <meta name="robots" content="noindex, nofollow" />}
+    {!preview && noindex && <meta name="robots" content="noindex" />}
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical} />

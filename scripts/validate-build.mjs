@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { loadCatalog, resetCatalogCache } from "./catalog.mjs";
 import { attachmentTypes } from "../src/content/types.mjs";
@@ -90,8 +90,35 @@ for (const urlPath of expectedPaths()) {
 const unique = new Set(notes);
 if (unique.size !== notes.length) errors.push(`Duplicate model notes: ${notes.length - unique.size}`);
 
-if (htmlIncludes(dist, "implementfit-20") || htmlIncludes(dist, "rel=\"sponsored\"")) {
+if (htmlIncludes(dist, "domainname-20") || htmlIncludes(dist, "rel=\"sponsored\"")) {
   errors.push("Affiliate markup is present while affiliatesEnabled is false");
+}
+
+const preview = process.env.PREVIEW === "true";
+const robotsPath = join(dist, "robots.txt");
+const headersPath = join(dist, "_headers");
+const robots = readFileSync(robotsPath, "utf8");
+if (preview) {
+  if (!robots.includes("Disallow: /") || robots.includes("Allow: /")) {
+    errors.push("Preview robots.txt must disallow the whole site");
+  }
+  let headers = "";
+  try {
+    headers = readFileSync(headersPath, "utf8");
+  } catch {
+    errors.push("Preview build is missing dist/_headers");
+  }
+  if (!headers.includes("X-Robots-Tag: noindex")) {
+    errors.push("Preview _headers is missing X-Robots-Tag: noindex");
+  }
+  for (const file of walk(dist)) {
+    const html = readFileSync(file, "utf8");
+    if (!html.includes('<meta name="robots" content="noindex, nofollow">')) {
+      errors.push(`Preview page missing noindex meta: ${file.replace(dist, "")}`);
+    }
+  }
+} else if (robots.includes("Disallow: /") || existsSync(headersPath) || htmlIncludes(dist, "noindex, nofollow")) {
+  errors.push("Production build still contains preview noindex rules");
 }
 
 function htmlIncludes(dir, needle) {

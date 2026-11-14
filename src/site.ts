@@ -8,5 +8,10 @@ export const siteConfig = {
   /** Affiliate links stay off until a person turns this on. */
   affiliatesEnabled: false,
   /** Amazon Associates tag. Unused while affiliatesEnabled is false. */
-  amazonTag: "implementfit-20",
+  amazonTag: "domainname-20",
 } as const;
+
+/** True only for a preview deploy. Production builds leave this false. */
+export function isPreviewBuild() {
+  return process.env.PREVIEW === "true";
+}

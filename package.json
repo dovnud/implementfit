@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev --host 127.0.0.1 --port 4178",
-    "build": "astro build && node scripts/validate-build.mjs",
+    "build": "node scripts/prepare-preview.mjs && astro build && node scripts/validate-build.mjs && node scripts/prepare-preview.mjs --clean || (node scripts/prepare-preview.mjs --clean && exit 1)",
     "preview": "astro preview --host 127.0.0.1 --port 4178",
     "validate": "node scripts/validate-build.mjs"
   },

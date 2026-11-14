@@ -19,7 +19,9 @@ The dev server listens on http://127.0.0.1:4178 .
 npm run build
 ```
 
-`astro build` writes `dist/`. The validation script then fails the build if a routed page is missing, a model page has no source, a model note is duplicated, a page is under the word threshold, or affiliate markup is present while the flag is off.
+`PREVIEW=true npm run build` is the Cloudflare Pages preview. It adds `noindex, nofollow` on every page, `public/_headers` with `X-Robots-Tag: noindex`, and a `robots.txt` of `Disallow: /`. A build without that flag omits all three. The Amazon tag in `src/site.ts` is `domainname-20` and stays unused while affiliate links are off.
+
+`astro build` writes `dist/`. The validation script then fails the build if a routed page is missing, a model page has no source, a model note is duplicated, a page is under the word threshold, affiliate markup is present while the flag is off, or the preview noindex rules are present in the wrong build.
 
 Output is static and can be uploaded to Cloudflare Pages. This repository does not deploy it.
 
