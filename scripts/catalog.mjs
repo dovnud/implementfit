@@ -226,7 +226,56 @@ function loadMaintenance(models) {
     if (!byModel.has(key)) byModel.set(key, []);
     byModel.get(key).push(item);
   }
+  for (const [key, items] of byModel) {
+    const seen = new Set();
+    byModel.set(key, items.filter((item) => {
+      const id = `${item.label}|${item.value}`;
+      if (seen.has(id)) return false;
+      seen.add(id);
+      return true;
+    }));
+  }
   return byModel;
+}
+
+function isFilterPart(item) {
+  const label = item.label.toLowerCase();
+  if (!item.status.startsWith("VERIFIED")) return false;
+  if (label.includes("capacity") || label.includes("spec") || label === "fluids") return false;
+  return label.includes("filter");
+}
+
+function fluidFactCount(items) {
+  const facts = new Set();
+  const patterns = [
+    [/fuel/, "fuel"],
+    [/coolant|cooling/, "coolant"],
+    [/crankcase/, "crankcase"],
+    [/engine oil/, "engine-oil"],
+    [/transmission/, "transmission"],
+    [/hydraulic/, "hydraulic"],
+    [/front axle/, "front-axle"],
+    [/recovery/, "recovery"],
+  ];
+  for (const item of items) {
+    if (!item.status.startsWith("VERIFIED") || isFilterPart(item)) continue;
+    const text = `${item.label}. ${item.value}`.toLowerCase();
+    let matched = false;
+    for (const [pattern, name] of patterns) {
+      if (pattern.test(text) && /\d/.test(item.value)) {
+        facts.add(name);
+        matched = true;
+      }
+    }
+    if (!matched && /\d/.test(item.value)) facts.add(`${item.label}:${item.value}`.toLowerCase());
+  }
+  return facts.size;
+}
+
+export function maintenanceStandsAlone(items) {
+  if (!items.length) return false;
+  const parts = items.filter(isFilterPart).length;
+  return parts >= 1 || fluidFactCount(items) >= 3;
 }
 
 function loadComparisons(modelByKey) {
@@ -248,16 +297,76 @@ function loadComparisons(modelByKey) {
     const models = keys.map((key) => modelByKey.get(key)).filter(Boolean);
     if (models.length !== keys.length || models.length < 1) continue;
     const verified = models.every((model) => model.fields.some((field) => field.key === "pto_hp" || field.key === "hitch" || field.key === "engine_hp"));
-    if (!verified) continue;
+    if (!verified || models.length < 2) continue;
+    const note = describeComparison(models, row.note || "");
+    if (!note) continue;
     pages.push({
       slug: row.slug,
       title: row.title,
       kind: row.kind || "pair",
       models,
-      note: row.note || "",
+      note,
     });
   }
   return pages;
+}
+
+function describeComparison(models, csvNote) {
+  const sentences = [];
+  if (csvNote) sentences.push(csvNote);
+  const keys = [
+    ["pto_hp", "PTO horsepower"],
+    ["engine_hp", "Engine power"],
+    ["hitch", "Hitch"],
+    ["rear_lift_lb", "Rear lift"],
+    ["loader_lift_lb", "Loader lift"],
+    ["weight_lb", "Weight"],
+    ["transmission", "Transmission"],
+  ];
+  let differences = 0;
+  for (const [key, label] of keys) {
+    const values = models.map((model) => model.fields.find((field) => field.key === key));
+    if (values.some((value) => !value)) continue;
+    const texts = values.map((value) => value.value);
+    if (new Set(texts).size === 1) {
+      sentences.push(`${label} is the same published cell on each column: ${texts[0]}.`);
+    } else {
+      differences += 1;
+      sentences.push(
+        `${models.map((model, index) => `${model.brand} ${model.name} publishes ${label.toLowerCase()} as ${texts[index]}`).join(" ")}.`,
+      );
+    }
+  }
+  if (!differences) return "";
+  sentences.push("The columns are not averaged, and a higher printed number is not treated as the one to use.");
+  return sentences.join(" ");
+}
+
+function productBlurb(product) {
+  const extra = String(product.notes || "")
+    .replace(/Model code is taken from the product-page URL\.[^.]*\./gi, "")
+    .replace(/Woods calls this category a box scraper\./gi, "")
+    .replace(/Horsepower range was not printed on the page that was read\./gi, "")
+    .trim();
+  const sentences = [];
+  sentences.push(
+    `${product.maker} ${product.name} is published as a ${product.type}${product.width ? `, at ${product.width}` : ""}.`,
+  );
+  if (product.hpRange) {
+    sentences.push(
+      `The horsepower window on the source page is ${product.hpRange}${product.hpBasis ? `, and that window is described as ${product.hpBasis}` : ""}.`,
+    );
+  } else {
+    sentences.push(
+      `${product.maker} does not print a tractor horsepower window for the ${product.name} on the page that was read. This record does not invent one.`,
+    );
+  }
+  if (product.hitch) sentences.push(`The hitch phrase is “${product.hitch}.”`);
+  if (product.weight) sentences.push(`Published weight is ${product.weight}.`);
+  if (product.ptoSpeed) sentences.push(`PTO speed is ${product.ptoSpeed}.`);
+  if (extra) sentences.push(extra);
+  sentences.push(`The figures above are only what the source prints for this model code.`);
+  return sentences.join(" ");
 }
 
 let cache;
@@ -297,7 +406,7 @@ export function loadCatalog() {
   for (const model of models) {
     const items = maintenance.get(`${model.brandSlug}/${model.slug}`) || [];
     model.maintenance = items;
-    model.maintenancePath = items.length ? `${model.path}maintenance/` : "";
+    model.maintenancePath = maintenanceStandsAlone(items) ? `${model.path}maintenance/` : "";
   }
 
   const products = [];
@@ -323,6 +432,7 @@ export function loadCatalog() {
       status: row.status,
       notes: row.notes || "",
     };
+    product.blurb = productBlurb(product);
     product.path = `/attachments/${typeSlug}/${product.slug}/`;
     products.push(product);
   }

@@ -45,20 +45,43 @@ const description = `${model.brand} ${model.name}: verified PTO, hitch, and lift
 ---
 <Base title={`${model.brand} ${model.name}`} description={description} crumbs={crumbs} jsonLd={jsonLd}>
   <h1>{model.brand} {model.name}</h1>
-  <p class="lede">{model.series}. Figures below are the verified cells for this model code. Blank topics were not verified, so they are omitted.</p>
+  <p class="lede" data-template>{model.series}. Figures below are the verified cells for this model code. Blank topics were not verified, so they are omitted.</p>
   <AdSlot />
   <p class="note">{model.note}</p>
   <SpecTable fields={model.fields} />
   <p class="source">
     Source: <a href={model.sourceUrl}>{model.sourceTitle}</a>. Checked {model.checked}.
   </p>
-  <h2>How to read this page</h2>
-  <p>
+  {model.maintenance.length > 0 && !model.maintenancePath && (
+    <section>
+      <h2>Fluids</h2>
+      <p>
+        {model.brand} {model.name} has these published fluid figures and no verified filter part number.
+        They stay on this page because a separate maintenance URL would only repeat them.
+      </p>
+      <table class="specs">
+        <tbody>
+          {model.maintenance.map((item) => (
+            <tr class={item.conflict ? "conflict" : undefined}>
+              <th scope="row">{item.label}</th>
+              <td>
+                <p>{item.value}</p>
+                {item.detail && <p>{item.detail}</p>}
+                <p class="source">Source: <a href={item.sourceUrl}>{item.sourceTitle}</a>. Checked {item.checked}.</p>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </section>
+  )}
+  <h2 data-template>How to read this page</h2>
+  <p data-template>
     Engine power and PTO horsepower are different cells. A gear transmission and a hydrostatic transmission can both be printed, and they are not interchangeable.
     Hitch words are copied from the document. Limited Category 1 stays Limited Category 1. A lift number is tied to the measurement point in the row.
     If that point is missing, the number is not treated as comparable to a pallet fork or a grapple.
   </p>
-  <div class="safety">
+  <div class="safety" data-template>
     <p>
       Rear lift and loader lift on this page are manufacturer figures at the stated point. They are not a load you should add, and they are not a ballast calculation.
       Confirm the figure against the operator’s manual for your serial number before buying or mounting an implement.

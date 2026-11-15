@@ -42,10 +42,10 @@ const jsonLd = {
   jsonLd={jsonLd}
 >
   <h1>{product.maker} {product.name}</h1>
-  <p class="lede">
+  <p class="lede" data-template>
     {product.maker} publishes this {product.name} as a {product.type}. The range below is the maker’s range, not a width derived from a tractor’s engine horsepower.
   </p>
-  <p class="note">{product.notes}</p>
+  <p class="note">{product.blurb}</p>
   <table class="specs">
     <tbody>
       {rows.map(([label, value]) => (
@@ -57,7 +57,7 @@ const jsonLd = {
     </tbody>
   </table>
   <p class="source">Source: <a href={product.sourceUrl}>{product.sourceTitle}</a>. Checked {product.checked}.</p>
-  <div class="safety">
+  <div class="safety" data-template>
     <p>
       A horsepower range is the maker’s published window. It is not a statement that every tractor inside that window will carry the implement, and it is not a lift rating.
     </p>

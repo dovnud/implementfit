@@ -4,7 +4,7 @@ import { loadCatalog } from "../../../../../scripts/catalog.mjs";
 
 export function getStaticPaths() {
   return loadCatalog().models
-    .filter((model) => model.maintenance.length)
+    .filter((model) => model.maintenancePath)
     .map((model) => ({
       params: { brand: model.brandSlug, model: model.slug },
       props: { model },
@@ -21,13 +21,13 @@ const description = `Verified filters and fluid capacities for the ${model.brand
 ---
 <Base title={`${model.brand} ${model.name} filters and fluids`} description={description} crumbs={crumbs}>
   <h1>{model.brand} {model.name} filters and fluids</h1>
-  <p class="lede">
+  <p class="lede" data-template>
     These rows are the capacities and part numbers opened from a manufacturer document for this model.
     A filter number is specific to the document and, where the document says so, to a serial break.
   </p>
-  <p class="note">
-    {model.brand} {model.name} maintenance is limited to what those documents state.
-    Empty topics are omitted. Confirm the number against the parts lookup for your serial before ordering.
+  <p>
+    For the {model.brand} {model.name}, the opened documents support {model.maintenance.length} verified rows:
+    {model.maintenance.map((item) => `${item.label} is ${item.value}`).join("; ")}.
   </p>
   <table class="specs">
     <tbody>

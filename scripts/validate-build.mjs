@@ -29,6 +29,15 @@ function words(html) {
   return text ? text.split(" ").length : 0;
 }
 
+function uniqueWords(html) {
+  const main = html.match(/<main\b[\s\S]*<\/main>/i)?.[0] || html;
+  const stripped = main
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<nav\b[\s\S]*?<\/nav>/gi, " ")
+    .replace(/<(p|div|section|h2)\b[^>]*\bdata-template\b[^>]*>[\s\S]*?<\/\1>/gi, " ");
+  return words(stripped);
+}
+
 function expectedPaths() {
   const paths = [
     "/",
@@ -77,6 +86,11 @@ for (const urlPath of expectedPaths()) {
   const count = words(html);
   const minimum = urlPath.split("/").filter(Boolean).length >= 3 ? 110 : 80;
   if (count < minimum) errors.push(`Thin page ${urlPath} (${count} words, minimum ${minimum})`);
+  const unique = uniqueWords(html);
+  const uniqueMinimum = 40;
+  if (unique < uniqueMinimum) {
+    errors.push(`Thin unique text ${urlPath} (${unique} non-template words, minimum ${uniqueMinimum})`);
+  }
   if (urlPath.startsWith("/tractors/") && urlPath.split("/").filter(Boolean).length === 3) {
     if (!html.includes('class="source"') || !html.includes("https://")) {
       errors.push(`Model page missing a source ${urlPath}`);
