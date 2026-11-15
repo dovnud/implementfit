@@ -73,6 +73,19 @@ function fileFor(urlPath) {
   return join(dist, rel);
 }
 
+const notFoundPath = join(dist, "404.html");
+if (!existsSync(notFoundPath)) {
+  errors.push("Missing dist/404.html");
+} else {
+  const notFound = readFileSync(notFoundPath, "utf8");
+  if (!notFound.includes("noindex")) errors.push("dist/404.html must be noindex");
+  for (const href of ["/tractors/", "/brands/", "/fit/"]) {
+    if (!notFound.includes(`href="${href}"`)) errors.push(`dist/404.html is missing a link to ${href}`);
+  }
+  const home = existsSync(join(dist, "index.html")) ? readFileSync(join(dist, "index.html"), "utf8") : "";
+  if (home && notFound === home) errors.push("dist/404.html is a copy of the home page");
+}
+
 const notes = [];
 for (const urlPath of expectedPaths()) {
   const file = fileFor(urlPath);

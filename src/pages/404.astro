@@ -1,0 +1,19 @@
+---
+import Base from "../layouts/Base.astro";
+
+const description = "That address is not a page on ImplementFit. Use the tractor index, brand hubs, or the fit check.";
+---
+<Base title="Page not found" description={description} noindex={true}>
+  <h1>That page is not on this site</h1>
+  <p>
+    The address does not match a published tractor, attachment, or guide. Missing model URLs, including old maintenance addresses, are not filled in with the home page.
+  </p>
+  <p>Try one of these:</p>
+  <ul>
+    <li><a href="/tractors/">All tractors</a> with a verified spec page</li>
+    <li><a href="/brands/">Brand hubs</a> for the models that are live</li>
+    <li><a href="/fit/">Fit check</a> for a published horsepower range</li>
+    <li><a href="/attachments/">Attachments</a> whose maker printed a width or a range</li>
+    <li><a href="/">Home</a></li>
+  </ul>
+</Base>
