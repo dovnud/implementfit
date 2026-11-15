@@ -45,20 +45,31 @@ const description = `${model.brand} ${model.name}: verified PTO, hitch, and lift
 ---
 <Base title={`${model.brand} ${model.name}`} description={description} crumbs={crumbs} jsonLd={jsonLd}>
   <h1>{model.brand} {model.name}</h1>
-  <p class="lede" data-template>{model.series}. Figures below are the verified cells for this model code. Blank topics were not verified, so they are omitted.</p>
-  <AdSlot />
+  <p class="source">{model.series}. Checked {model.checked}.</p>
+  <section class="sheet" aria-label="Spec sheet">
+    <SpecTable fields={model.fields} />
+    <p class="source">Source: <a href={model.sourceUrl}>{model.sourceTitle}</a>.</p>
+  </section>
   <p class="note">{model.note}</p>
-  <SpecTable fields={model.fields} />
-  <p class="source">
-    Source: <a href={model.sourceUrl}>{model.sourceTitle}</a>. Checked {model.checked}.
-  </p>
-  {model.maintenance.length > 0 && !model.maintenancePath && (
-    <section>
-      <h2>Fluids</h2>
-      <p>
-        {model.brand} {model.name} has these published fluid figures and no verified filter part number.
-        They stay on this page because a separate maintenance URL would only repeat them.
-      </p>
+  <div class="callout" data-template>
+    <p>Lift and loader numbers are the published figure at the stated point. They are not fork capacity and not a ballast weight. Check the manual for your serial before you mount anything.</p>
+  </div>
+  <h2>What fits</h2>
+  <p>Run this tractor in the <a href="/fit/">fit check</a>. The result is “inside the published range” or “cannot tell.”</p>
+  <ul>
+    <li><a href="/sizing/limited-category-1/">Limited Category 1</a></li>
+    <li><a href="/sizing/gear-vs-hst-pto/">Gear and HST PTO</a></li>
+    <li><a href="/sizing/loader-vs-fork/">Loader lift and forks</a></li>
+    <li><a href="/attachments/rotary-cutter/">Rotary cutters</a></li>
+    <li><a href={`/brands/${model.brandSlug}/`}>{model.brand}</a></li>
+    {comparisons.map((page) => <li><a href={page.path}>{page.title}</a></li>)}
+  </ul>
+  <h2>Maintenance</h2>
+  {model.maintenancePath ? (
+    <p><a href={model.maintenancePath}>Filters and fluids for the {model.name}</a>. A part number is here only when an OEM document printed it.</p>
+  ) : model.maintenance.length > 0 ? (
+    <>
+      <p>Published fluids. No verified filter part number, so there is no separate maintenance page.</p>
       <table class="specs">
         <tbody>
           {model.maintenance.map((item) => (
@@ -67,45 +78,27 @@ const description = `${model.brand} ${model.name}: verified PTO, hitch, and lift
               <td>
                 <p>{item.value}</p>
                 {item.detail && <p>{item.detail}</p>}
-                <p class="source">Source: <a href={item.sourceUrl}>{item.sourceTitle}</a>. Checked {item.checked}.</p>
+                <p class="source"><a href={item.sourceUrl}>{item.sourceTitle}</a>. Checked {item.checked}.</p>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-    </section>
+    </>
+  ) : (
+    <p>No verified filter number or fluid capacity is stored for the {model.name}.</p>
   )}
-  <h2 data-template>How to read this page</h2>
-  <p data-template>
-    Engine power and PTO horsepower are different cells. A gear transmission and a hydrostatic transmission can both be printed, and they are not interchangeable.
-    Hitch words are copied from the document. Limited Category 1 stays Limited Category 1. A lift number is tied to the measurement point in the row.
-    If that point is missing, the number is not treated as comparable to a pallet fork or a grapple.
-  </p>
-  <div class="safety" data-template>
-    <p>
-      Rear lift and loader lift on this page are manufacturer figures at the stated point. They are not a load you should add, and they are not a ballast calculation.
-      Confirm the figure against the operator’s manual for your serial number before buying or mounting an implement.
-    </p>
-  </div>
-  <h2>Related pages</h2>
-  <ul>
-    <li><a href={`/brands/${model.brandSlug}/`}>{model.brand} hub</a></li>
-    {model.maintenancePath && <li><a href={model.maintenancePath}>Filters and fluids</a></li>}
-    <li><a href="/fit/">Fit check</a></li>
-    <li><a href="/sizing/limited-category-1/">Limited Category 1</a></li>
-    <li><a href="/sizing/gear-vs-hst-pto/">Gear and HST PTO</a></li>
-    <li><a href="/sizing/loader-vs-fork/">Loader lift and forks</a></li>
-    <li><a href="/sizing/rotary-cutter-width/">Rotary cutter width</a></li>
-    {comparisons.map((page) => <li><a href={page.path}>{page.title}</a></li>)}
-  </ul>
+  <h2>Sources</h2>
+  <p class="source"><a href={model.sourceUrl}>{model.sourceTitle}</a>. Checked {model.checked}. The full list is on <a href="/sources/">Sources</a>. Disagreements are on <a href="/corrections/">Corrections</a>.</p>
   {seriesMates.length > 0 && (
     <>
-      <h2>Other {model.series} rows</h2>
+      <h2>Same series</h2>
       <ul>
         {seriesMates.map((item) => (
-          <li><a href={item.path}>{item.brand} {item.name}</a></li>
+          <li><a href={item.path}>{item.name}</a></li>
         ))}
       </ul>
     </>
   )}
+  <AdSlot />
 </Base>

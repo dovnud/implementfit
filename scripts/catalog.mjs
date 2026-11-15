@@ -128,9 +128,7 @@ function fieldList(row) {
 function buildNote(model, siblings) {
   const byKey = Object.fromEntries(model.fields.map((field) => [field.key, field]));
   const sentences = [];
-  sentences.push(
-    `${model.brand} ${model.name} is the ${model.series} column published under that exact model code. Only cells marked verified are shown, and each one keeps the wording of its source.`,
-  );
+  sentences.push(`${model.brand} ${model.name}, ${model.series}. Blank lines were not in the source.`);
   const pto = byKey.pto_hp;
   if (pto) {
     sentences.push(`The PTO horsepower cell reads: ${pto.value}.`);

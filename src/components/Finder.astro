@@ -1,0 +1,155 @@
+---
+import { loadCatalog } from "../../scripts/catalog.mjs";
+
+const catalog = loadCatalog();
+const brands = catalog.brands.map((brand) => ({
+  name: brand.name,
+  models: brand.models.map((model) => {
+    const field = (key: string) => model.fields.find((item: { key: string }) => item.key === key);
+    const pto = field("pto_hp");
+    return {
+      id: `${model.brandSlug}/${model.slug}`,
+      name: model.name,
+      path: model.path,
+      pto: pto?.value || "",
+      ptoNote: pto?.note || "",
+      hitch: field("hitch")?.value || "",
+      lift: field("rear_lift_lb")?.value || "",
+      weight: field("weight_lb")?.value || "",
+      sourceTitle: model.sourceTitle,
+      checked: model.checked,
+    };
+  }),
+}));
+const attachments = catalog.products.map((product) => ({
+  id: product.slug,
+  label: `${product.maker} ${product.name}`,
+  range: product.hpRange,
+  width: product.width,
+  hitch: product.hitch,
+  sourceTitle: product.sourceTitle,
+  checked: product.checked,
+}));
+const payload = JSON.stringify({ brands, attachments }).replaceAll("<", "\\u003c");
+---
+<div class="finder" id="finder">
+  <div class="finder-head">Tractor finder <span>PUBLISHED SHEETS ONLY</span></div>
+  <form class="finder-body" id="fit-form">
+    <div class="f-grid">
+      <div>
+        <label for="fBrand">Brand</label>
+        <select id="fBrand" name="brand" required>
+          <option value="">Choose a brand…</option>
+          {brands.map((brand) => <option value={brand.name}>{brand.name}</option>)}
+        </select>
+      </div>
+      <div>
+        <label for="fModel">Model</label>
+        <select id="fModel" name="model" required disabled>
+          <option value="">Pick a brand first</option>
+        </select>
+      </div>
+      <div>
+        <label for="fAttach">Attachment, if you want a range check</label>
+        <select id="fAttach" name="attachment">
+          <option value="">Sheet only</option>
+          {attachments.map((item) => <option value={item.id}>{item.label}</option>)}
+        </select>
+      </div>
+    </div>
+    <button class="f-btn" type="submit">Show the published sheet</button>
+    <div class="f-result" id="fit-result" aria-live="polite"></div>
+    <noscript><p>The finder needs JavaScript. <a href="/tractors/">Browse every tractor</a>.</p></noscript>
+  </form>
+</div>
+<script id="fit-data" type="application/json" set:html={payload}></script>
+<script>
+  const data = JSON.parse(document.getElementById("fit-data").textContent || "{}");
+  const form = document.getElementById("fit-form");
+  const brandSelect = document.getElementById("fBrand");
+  const modelSelect = document.getElementById("fModel");
+  const out = document.getElementById("fit-result");
+
+  function numbersBeforeKw(text) {
+    const found = [];
+    const pattern = /(\d+(?:\.\d+)?)\s*(?:hp)?\s*\([^)]{0,24}kw\)/gi;
+    let match;
+    while ((match = pattern.exec(text))) found.push(Number(match[1]));
+    if (found.length) return found;
+    return [...text.matchAll(/\d+(?:\.\d+)?/g)].map((item) => Number(item[0])).filter((item) => item > 0 && item < 200);
+  }
+  function hitchClass(text) {
+    const value = (text || "").toLowerCase();
+    if (!value) return "unknown";
+    if (value.includes("limited") && /\band\b/.test(value) && /cat/.test(value)) return "limited-or-cat1";
+    if (value.includes("limited")) return "limited";
+    if (/1\s*\/\s*2|i\s*(&|and)\s*ii|1\s+and\s+2|cat\s*1\s*\/\s*cat\s*2/.test(value)) return "both";
+    if (/cat(?:egory)?\.?\s*(ii|2)\b/.test(value) && !/1/.test(value)) return "cat2";
+    if (/cat/.test(value)) return "cat1";
+    return "unknown";
+  }
+  function hitchCompatible(tractor, attachment) {
+    if (tractor === "unknown" || attachment === "unknown" || tractor === "limited") return false;
+    if (tractor === "limited-or-cat1" || attachment === "limited-or-cat1") {
+      const other = tractor === "limited-or-cat1" ? attachment : tractor;
+      return other === "cat1" || other === "limited" || other === "both" || other === "limited-or-cat1";
+    }
+    if (tractor === "both" || attachment === "both") return tractor !== "limited";
+    return tractor === attachment;
+  }
+  function publishedRange(text) {
+    const span = (text || "").match(/(\d+(?:\.\d+)?)\s*[-–]\s*(\d+(?:\.\d+)?)/);
+    if (span) return [Number(span[1]), Number(span[2])];
+    const ceiling = (text || "").match(/up to\s*(\d+(?:\.\d+)?)/i);
+    if (ceiling) return [0, Number(ceiling[1])];
+    return null;
+  }
+  function modelById(id) {
+    for (const brand of data.brands) {
+      const model = brand.models.find((item) => item.id === id);
+      if (model) return model;
+    }
+    return null;
+  }
+
+  brandSelect.addEventListener("change", () => {
+    const brand = data.brands.find((item) => item.name === brandSelect.value);
+    modelSelect.innerHTML = "";
+    const first = document.createElement("option");
+    first.value = "";
+    first.textContent = brand ? "Choose a model…" : "Pick a brand first";
+    modelSelect.append(first);
+    modelSelect.disabled = !brand;
+    if (!brand) return;
+    for (const model of brand.models) {
+      const option = document.createElement("option");
+      option.value = model.id;
+      option.textContent = model.name;
+      modelSelect.append(option);
+    }
+  });
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const tractor = modelById(modelSelect.value);
+    const attachment = data.attachments.find((item) => item.id === form.attachment.value);
+    if (!tractor) return;
+    const lines = [`<p><a href="${tractor.path}">${tractor.name} spec sheet</a></p>`];
+    lines.push(`<p class="mono">PTO ${tractor.pto || "not published"} · Hitch ${tractor.hitch || "not published"}</p>`);
+    if (tractor.lift) lines.push(`<p class="mono">Rear lift ${tractor.lift}</p>`);
+    if (attachment) {
+      let verdict = "cannot tell";
+      const conflicted = /conflict|disagree/i.test(`${tractor.pto} ${tractor.ptoNote}`);
+      const range = publishedRange(attachment.range || "");
+      const ptos = tractor.pto ? numbersBeforeKw(tractor.pto) : [];
+      if (!conflicted && range && ptos.length && tractor.hitch && attachment.hitch && hitchCompatible(hitchClass(tractor.hitch), hitchClass(attachment.hitch))) {
+        if (ptos.every((pto) => pto >= range[0] && pto <= range[1])) verdict = "inside the published range";
+      }
+      const klass = verdict === "inside the published range" ? "ok" : "";
+      lines.push(`<p class="callout ${klass}"><strong>${verdict}</strong></p>`);
+      lines.push(`<p class="source">${attachment.label}. ${attachment.sourceTitle}. Checked ${attachment.checked}.${attachment.width ? ` Width ${attachment.width}.` : ""}${attachment.range ? ` Range ${attachment.range}.` : ""}</p>`);
+    }
+    lines.push(`<p class="source">Tractor source: ${tractor.sourceTitle}. Checked ${tractor.checked}.</p>`);
+    out.innerHTML = lines.join("");
+  });
+</script>

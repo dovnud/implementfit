@@ -12,7 +12,8 @@ interface Props {
 }
 const { title, description, crumbs = [], jsonLd, noindex = false } = Astro.props;
 const preview = isPreviewBuild();
-const canonical = new URL(Astro.url.pathname, siteConfig.url).href;
+const path = Astro.url.pathname;
+const canonical = new URL(path, siteConfig.url).href;
 const breadcrumbLd = crumbs.length
   ? {
       "@context": "https://schema.org",
@@ -26,12 +27,24 @@ const breadcrumbLd = crumbs.length
     }
   : null;
 const blocks = [breadcrumbLd, jsonLd].flat().filter(Boolean);
+const links = [
+  { href: "/", label: "Finder" },
+  { href: "/tractors/", label: "Tractors" },
+  { href: "/brands/", label: "Brands" },
+  { href: "/attachments/", label: "Attachments" },
+  { href: "/compare/", label: "Compare" },
+  { href: "/sizing/", label: "Guides" },
+  { href: "/fit/", label: "Fit check" },
+];
+const current = (href: string) => (href === "/" ? path === "/" : path.startsWith(href));
 ---
 <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#232a30" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
@@ -49,21 +62,28 @@ const blocks = [breadcrumbLd, jsonLd].flat().filter(Boolean);
   <body>
     <a class="skip" href="#content">Skip to content</a>
     <header class="site">
-      <div class="wrap bar">
-        <a class="brand" href="/">{siteConfig.name}</a>
-        <nav aria-label="Primary">
+      <div class="wrap head-in">
+        <a class="brand" href="/">Implement<span>Fit</span><small>PTO, hitch, and lift from the published sheet</small></a>
+        <details class="nav-pop">
+          <summary>Menu</summary>
+          <nav aria-label="Main">
+            <ul>
+              {links.map((link) => (
+                <li><a href={link.href} aria-current={current(link.href) ? "page" : undefined}>{link.label}</a></li>
+              ))}
+            </ul>
+          </nav>
+        </details>
+        <nav class="main" aria-label="Main">
           <ul>
-            <li><a href="/tractors/">Tractors</a></li>
-            <li><a href="/brands/">Brands</a></li>
-            <li><a href="/attachments/">Attachments</a></li>
-            <li><a href="/compare/">Compare</a></li>
-            <li><a href="/sizing/">Sizing</a></li>
-            <li><a href="/fit/">Fit check</a></li>
+            {links.map((link) => (
+              <li><a href={link.href} aria-current={current(link.href) ? "page" : undefined}>{link.label}</a></li>
+            ))}
           </ul>
         </nav>
       </div>
     </header>
-    <main id="content" class="wrap">
+    <main id="content" class={crumbs.length ? "wrap page" : undefined}>
       {crumbs.length > 0 && (
         <nav class="crumbs" aria-label="Breadcrumb">
           <ol>
@@ -79,22 +99,36 @@ const blocks = [breadcrumbLd, jsonLd].flat().filter(Boolean);
       <slot />
     </main>
     <footer class="site">
-      <div class="wrap">
-        <p>
-          Published by {siteConfig.editorialName}. Contact
-          <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a>.
-          Specs are quoted from the linked documents. This site does not publish a fit verdict or a ballast weight.
-        </p>
-        <p>
-          <a href="/about/">About</a> ·
-          <a href="/methodology/">Methodology</a> ·
-          <a href="/sources/">Sources</a> ·
-          <a href="/corrections/">Corrections</a> ·
-          <a href="/privacy/">Privacy</a> ·
-          <a href="/terms/">Terms</a> ·
-          <a href="/disclosure/">Affiliate disclosure</a> ·
-          <a href="/contact/">Contact</a>
-        </p>
+      <div class="wrap foot-in">
+        <div>
+          <p class="brand">Implement<span>Fit</span></p>
+          <p>Published by {siteConfig.editorialName}. <a href={`mailto:${siteConfig.contactEmail}`}>{siteConfig.contactEmail}</a></p>
+        </div>
+        <div>
+          <h2>Look up</h2>
+          <ul>
+            <li><a href="/tractors/">Tractors</a></li>
+            <li><a href="/brands/">Brands</a></li>
+            <li><a href="/attachments/">Attachments</a></li>
+            <li><a href="/fit/">Fit check</a></li>
+          </ul>
+        </div>
+        <div>
+          <h2>The record</h2>
+          <ul>
+            <li><a href="/methodology/">How a cell is verified</a></li>
+            <li><a href="/sources/">Sources</a></li>
+            <li><a href="/corrections/">Corrections</a></li>
+            <li><a href="/about/">About</a></li>
+            <li><a href="/privacy/">Privacy</a></li>
+            <li><a href="/terms/">Terms</a></li>
+            <li><a href="/disclosure/">Affiliate disclosure</a></li>
+            <li><a href="/contact/">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="wrap disclaimer">
+        <p>Numbers are quoted from the linked documents. A conflict stays a conflict. This site does not publish a fit verdict or a ballast weight.</p>
       </div>
     </footer>
   </body>

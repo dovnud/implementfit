@@ -1,5 +1,4 @@
 ---
-import SpecTable from "../../components/SpecTable.astro";
 import Base from "../../layouts/Base.astro";
 import { loadCatalog } from "../../../scripts/catalog.mjs";
 
@@ -10,27 +9,50 @@ export function getStaticPaths() {
   }));
 }
 const { page } = Astro.props;
+const keys = ["engine_hp", "pto_hp", "hitch", "rear_lift_lb", "loader_lift_lb", "weight_lb", "transmission", "tires"];
+const rows = keys
+  .map((key) => {
+    const cells = page.models.map((model) => model.fields.find((field) => field.key === key));
+    if (cells.every((cell) => !cell)) return null;
+    return { label: cells.find(Boolean).label, cells };
+  })
+  .filter(Boolean);
 ---
 <Base
   title={page.title}
-  description={page.note}
+  description={page.note.slice(0, 180)}
   crumbs={[{ name: "Home", href: "/" }, { name: "Compare", href: "/compare/" }, { name: page.title, href: page.path }]}
 >
   <h1>{page.title}</h1>
-  <p class="lede">{page.note}</p>
-  <p data-template>
-    Each column is a separate verified model page. Numbers are not subtracted into a new rating.
-  </p>
-  <div class="grid">
-    {page.models.map((model) => (
-      <article class="card">
-        <h2><a href={model.path}>{model.brand} {model.name}</a></h2>
-        <SpecTable fields={model.fields} />
-        <p class="source"><a href={model.sourceUrl}>{model.sourceTitle}</a>. Checked {model.checked}.</p>
-      </article>
-    ))}
+  <p>{page.note}</p>
+  <div class="sheet">
+    <table class="specs">
+      <thead>
+        <tr>
+          <th scope="col">Cell</th>
+          {page.models.map((model) => (
+            <th scope="col"><a href={model.path}>{model.name}</a></th>
+          ))}
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) => (
+          <tr class={row.cells.some((cell) => cell?.conflict) ? "conflict" : undefined}>
+            <th scope="row">{row.label}</th>
+            {row.cells.map((cell) => (
+              <td class="mono">{cell ? cell.value : "—"}</td>
+            ))}
+          </tr>
+        ))}
+      </tbody>
+    </table>
   </div>
-  <div class="safety" data-template>
-    <p>Lift figures in these columns keep the measurement point from each source. Do not treat the higher number as the one to use for forks or ballast.</p>
+  <ul>
+    {page.models.map((model) => (
+      <li class="source"><a href={model.path}>{model.brand} {model.name}</a>: <a href={model.sourceUrl}>{model.sourceTitle}</a>. Checked {model.checked}.</li>
+    ))}
+  </ul>
+  <div class="callout" data-template>
+    <p>Do not treat the higher lift number as the one to use for forks or ballast. The measurement point has to match.</p>
   </div>
 </Base>
