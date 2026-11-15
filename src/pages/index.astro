@@ -1,6 +1,7 @@
 ---
 import AdSlot from "../components/AdSlot.astro";
 import Finder from "../components/Finder.astro";
+import TractorGag from "../components/TractorGag.astro";
 import Base from "../layouts/Base.astro";
 import { siteConfig } from "../site";
 import { loadCatalog } from "../../scripts/catalog.mjs";
@@ -25,9 +26,10 @@ const jsonLd = {
   <div class="hero">
     <div class="wrap hero-in">
       <div class="hero-grid">
-        <div>
+        <div class="hero-copy">
           <h1>What fits your compact tractor</h1>
           <p class="lede">Pick the brand and the model. You get the published PTO horsepower, hitch category, and lift. Add an attachment only if its maker printed a horsepower range.</p>
+          <TractorGag />
         </div>
         <Finder />
       </div>
