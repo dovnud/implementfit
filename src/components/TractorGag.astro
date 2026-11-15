@@ -1,0 +1,205 @@
+<div class="hero-gag" aria-hidden="true">
+  <svg viewBox="0 0 620 268" width="620" height="268" fill="none" focusable="false" preserveAspectRatio="xMidYMax meet">
+    <path class="dirt" d="M0 246h620v22H0z" />
+    <path class="dirt-line" d="M0 246h620" />
+    <g class="track">
+      <path class="dash" d="M-24 256h16M6 256h16M36 256h16M66 256h16M96 256h16M126 256h16M156 256h16M186 256h16M216 256h16M246 256h16M276 256h16M306 256h16M336 256h16M366 256h16M396 256h16M426 256h16M456 256h16M486 256h16M516 256h16M546 256h16M576 256h16M606 256h16M636 256h16" />
+    </g>
+
+    <g class="dust">
+      <ellipse class="mote" cx="118" cy="244" rx="7" ry="2.4" />
+      <ellipse class="mote b" cx="132" cy="248" rx="5" ry="2" />
+      <ellipse class="mote c" cx="104" cy="247" rx="4" ry="1.6" />
+    </g>
+
+    <g class="bob">
+    <path class="hitch" d="M118 196l-36 8M112 214l-34 16" />
+    <path class="deep belly" d="M196 198h210l12 36H188z" />
+
+    <g class="wheel rear">
+      <circle class="tire" cx="168" cy="184" r="62" />
+      <circle class="side" cx="168" cy="184" r="40" />
+      <g class="spin">
+        <circle class="tread" cx="168" cy="184" r="54" />
+        <path class="spoke" d="M168 184v-50M168 184l43 25M168 184l-43 25" />
+        <circle class="rim" cx="168" cy="184" r="15" />
+        <circle class="lug" cx="168" cy="173" r="2.3" />
+        <circle class="lug" cx="178" cy="190" r="2.3" />
+        <circle class="lug" cx="158" cy="190" r="2.3" />
+        <circle class="nut" cx="168" cy="184" r="5.5" />
+      </g>
+    </g>
+    <g class="wheel front">
+      <circle class="tire" cx="404" cy="214" r="32" />
+      <circle class="side" cx="404" cy="214" r="20" />
+      <g class="spin">
+        <circle class="tread" cx="404" cy="214" r="27" />
+        <path class="spoke" d="M404 214v-24M404 214l21 12M404 214l-21 12" />
+        <circle class="rim" cx="404" cy="214" r="8" />
+        <circle class="lug" cx="404" cy="208" r="1.6" />
+        <circle class="lug" cx="410" cy="218" r="1.6" />
+        <circle class="lug" cx="398" cy="218" r="1.6" />
+        <circle class="nut" cx="404" cy="214" r="3.2" />
+      </g>
+    </g>
+
+    <path class="fender" fill-rule="evenodd" d="M88 184a80 80 0 0 1 160 0h-16a64 64 0 0 0-128 0z" />
+    <path class="body cowl" d="M232 150h78v58h-86z" />
+    <path class="platform" d="M186 206h108v14H186z" />
+    <path class="step" d="M292 214h22v8h-22z" />
+
+    <path class="body hood" d="M278 118l176 22c12 2 16 12 16 22v40H292v-52c0-16-6-28-14-32z" />
+    <path class="deep" d="M300 168h150l4 16H306z" />
+    <path class="steel grill" d="M462 156h18v46h-18z" />
+    <path class="slot" d="M466 164h10M466 172h10M466 180h10M466 188h10" />
+    <circle class="lamp" cx="448" cy="164" r="6" />
+    <circle class="lamp-hi" cx="446" cy="162" r="1.8" />
+    <path class="steel stack" d="M324 74h12v48h-12z" />
+    <path class="steel cap" d="M320 66h20v10h-20z" />
+    <circle class="capfuel" cx="360" cy="132" r="3.2" />
+
+    <path class="seat" d="M208 112h32v32h10v14H198v-14h10z" />
+    <path class="rops" d="M196 30h10v132h-10zM268 30h10v118h-10zM188 22h98v12H188z" />
+
+    <path class="arm" d="M358 150l96 42 7 12-102-46z" />
+    <path class="arm link" d="M362 136l90 36 5 8-94-38z" />
+    <path class="bucket" d="M458 186v44l72 12 12-10-36-26-36-20z" />
+
+    <g class="puffs">
+      <circle class="wisp" cx="330" cy="58" r="5" />
+      <circle class="puff" cx="330" cy="62" r="5" />
+      <circle class="puff b" cx="330" cy="62" r="4.2" />
+      <circle class="puff c" cx="330" cy="62" r="5.4" />
+    </g>
+    </g>
+  </svg>
+</div>
+
+<style>
+  .hero-gag {
+    --body: var(--accent);
+    --deep: #9a3810;
+    --tire: #232a30;
+    --side: #3a434c;
+    --rim: #e7ebef;
+    --spoke: #f4f7f8;
+    --tread: #8e98a2;
+    --steel: #232a30;
+    --lamp: #f4efe4;
+    --dirt: #8d6844;
+    --dirt2: #c4a37a;
+    --dash: #5e4632;
+    --puff: #b7bec6;
+    --roll: 2.6s;
+    height: 148px;
+    margin-top: 6px;
+    overflow: hidden;
+    pointer-events: none;
+    contain: layout;
+  }
+  .hero-gag svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+  }
+  .hero-gag path,
+  .hero-gag circle,
+  .hero-gag ellipse {
+    stroke: var(--ink);
+    stroke-width: 1.7;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+  }
+  .body { fill: var(--body); }
+  .deep { fill: var(--deep); }
+  .fender { fill: var(--body); }
+  .tire { fill: var(--tire); }
+  .side { fill: var(--side); stroke: none; }
+  .tread { fill: none; stroke: var(--tread); stroke-width: 7; stroke-dasharray: 16 12; }
+  .spoke { fill: none; stroke: var(--spoke); stroke-width: 6.5; }
+  .wheel.front .spoke { stroke-width: 4; }
+  .wheel.front .tread { stroke-width: 4.5; stroke-dasharray: 10 8; }
+  .rim { fill: var(--rim); }
+  .lug { fill: var(--tire); stroke: none; }
+  .nut { fill: var(--body); }
+  .steel, .platform, .step, .hitch, .bucket { fill: var(--steel); }
+  .arm { fill: var(--body); }
+  .link { fill: var(--deep); }
+  .hitch { fill: none; stroke: var(--steel); stroke-width: 5; }
+  .seat { fill: #1a1e22; }
+  .rops { fill: var(--steel); }
+  .slot { fill: none; stroke: var(--lamp); stroke-width: 1.6; }
+  .lamp { fill: var(--lamp); }
+  .lamp-hi { fill: #fff; stroke: none; }
+  .capfuel { fill: var(--deep); }
+  .dirt { fill: var(--dirt); stroke: none; }
+  .dirt-line { fill: none; stroke: var(--ink); stroke-width: 1.5; }
+  .dash { fill: none; stroke: var(--dash); stroke-width: 3.2; stroke-linecap: butt; }
+  .wisp, .puff, .mote { fill: var(--puff); stroke: none; }
+  .mote { fill: var(--dirt2); }
+  .wisp { opacity: 0.5; }
+
+  .bob, .spin, .track, .puff, .mote { transform-box: view-box; }
+  .bob { transform-origin: 0 0; animation: bob 0.36s ease-in-out infinite; }
+  .wheel.rear .spin { transform-origin: 168px 184px; animation: spin var(--roll) linear infinite; }
+  .wheel.front .spin { transform-origin: 404px 214px; animation: spin 1.34s linear infinite; }
+  .track { transform-origin: 0 0; animation: ground 0.2s linear infinite; }
+  .puff, .mote {
+    transform-box: fill-box;
+    transform-origin: center;
+    opacity: 0;
+  }
+  .puff { animation: puff 2.4s ease-out infinite; }
+  .puff.b { animation-delay: -0.8s; }
+  .puff.c { animation-delay: -1.6s; }
+  .mote { animation: dust 0.85s linear infinite; }
+  .mote.b { animation-delay: -0.28s; }
+  .mote.c { animation-delay: -0.55s; }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes ground { to { transform: translateX(-30px); } }
+  @keyframes bob {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(3px); }
+  }
+  @keyframes puff {
+    0% { transform: translate(0, 4px) scale(0.4); opacity: 0; }
+    18% { opacity: 0.62; }
+    100% { transform: translate(-10px, -42px) scale(1.55); opacity: 0; }
+  }
+  @keyframes dust {
+    0% { transform: translate(0, 0); opacity: 0; }
+    20% { opacity: 0.75; }
+    100% { transform: translate(-34px, 3px); opacity: 0; }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .hero-gag {
+      --deep: #c25816;
+      --tire: #07090b;
+      --side: #2a3138;
+      --rim: #d5dbe2;
+      --spoke: #eef2f4;
+      --tread: #9aa4ae;
+      --steel: #14181c;
+      --lamp: #f3eee4;
+      --dirt: #b8926a;
+      --dirt2: #e4cba8;
+      --dash: #6b5340;
+      --puff: #aeb6be;
+    }
+    .seat { fill: #0c0e10; }
+  }
+  @media (min-width: 900px) {
+    .hero-gag {
+      height: auto;
+      flex: 1 1 auto;
+      min-height: 220px;
+      margin-top: 8px;
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-gag * { animation: none !important; }
+  }
+</style>
