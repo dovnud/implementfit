@@ -12,11 +12,10 @@ export const attachmentTypes = [
   {
     slug: "box-blade",
     title: "Box blades",
-    lede: "No box-blade product sheet is verified in the attachment table yet, so this page does not name a width to buy.",
+    lede: "Woods publishes these as box scrapers. Each product page uses the width and horsepower range printed on that Woods page.",
     body: [
-      "A box blade needs a 3-point hitch the tractor sheet actually names, and enough PTO horsepower only if the blade is not a ground-engaging tool that still depends on tractor weight. The verified tractor rows show Category 1, Category I, Limited Category 1, and Category 1/2 as different phrases.",
-      "Use the John Deere 1025R and 1023E pages when you need a Limited Category 1 example, and the Kubota L3902 page when you need separate gear and HST PTO figures. Those numbers come from the model tables, not from a box-blade catalog.",
-      "CountyLine, King Kutter, and Frontier box-blade specs were not opened. They are not listed as products.",
+      "A box blade still has to match the hitch phrase on the tractor. Woods prints Limited CAT 1 and CAT 1 on some scrapers and CAT 1, or CAT 1 and CAT 2, on others. Limited Category 1 on a tractor is not rewritten as Category 1.",
+      "The horsepower window is the maker’s window. There is no horsepower-per-inch rule. CountyLine, King Kutter, and Frontier box-blade specs were not opened and are not listed.",
     ],
   },
   {
@@ -25,7 +24,7 @@ export const attachmentTypes = [
     lede: "Loader lift at the pivot pin is not the capacity of a set of forks.",
     body: [
       "The John Deere 2 Series brochure prints loader lift at max height at the pivot: 803 lb on the 2025R and 1,120 lb on the 2032R and 2038R. Massey Ferguson’s US brochure prints FL2611 and FL2814 lifts at the pivot pin and again at 19.5 inches forward of the pin. Moving the load forward of the pin lowers the published figure.",
-      "No pallet-fork maker sheet with a load-center rating is in the attachment table. Until that sheet is added, the fit check cannot put a fork and a tractor in the same range.",
+      "Woods publishes pallet-fork widths, tine sizes, and hitch styles. Those pages do not print a tractor horsepower range, so the fit check cannot put one inside a published horsepower window.",
     ],
   },
   {
@@ -33,8 +32,17 @@ export const attachmentTypes = [
     title: "Grapples",
     lede: "A grapple needs a loader, a third hydraulic function, and a lift figure at a named point.",
     body: [
-      "None of the verified attachment rows is a grapple. Tractor pages that publish a loader lift name the measurement point. Pages that do not publish a loader lift omit it.",
+      "Land Pride’s SGC1060 and SGC1072 operator manual prints a horsepower range of 30–55 hp and two hitch weights, one for the universal quick hitch and one for the Kubota B series hitch. A grapple still needs a loader and a hydraulic circuit the tractor sheet actually names. Most tractor rows here do not have a verified remote-flow cell.",
       "Hydraulic flow is not compared here because most tractor rows in this release do not have a verified remote-flow cell. The fit check returns cannot tell when either side of a comparison is missing.",
+    ],
+  },
+  {
+    slug: "rear-blade",
+    title: "Rear blades",
+    lede: "Woods rear-blade pages list a width and a tractor horsepower range. Those figures are copied here and not turned into a width rule.",
+    body: [
+      "The RBS models include ranges written as “up to 30” horsepower and as 20–45 horsepower. The larger RB models run from 30–65 horsepower up to 80–150. The fit check uses that printed window and the hitch phrase on the same page.",
+      "A rear blade does not use a PTO shaft. Horsepower on these pages is the tractor range Woods printed, not a gearbox rating.",
     ],
   },
   {

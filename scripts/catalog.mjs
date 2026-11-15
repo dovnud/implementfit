@@ -54,6 +54,38 @@ function isSingleModel(model) {
   return true;
 }
 
+const SOURCE_KEYS = {
+  engine_hp: "engine_source",
+  pto_hp: "pto_source",
+  hitch: "hitch_source",
+  rear_lift_lb: "rear_lift_source",
+  loader_lift_lb: "loader_source",
+  loader_model: "loader_source",
+  weight_lb: "weight_source",
+  transmission: "transmission_source",
+  tires: "tires_source",
+};
+
+function attachSource(field, row) {
+  const raw = String(row[SOURCE_KEYS[field.key]] || "");
+  const parts = raw.split("||").map((part) => part.trim()).filter(Boolean);
+  const first = (parts[0] || "").split("|").map((part) => part.trim());
+  if (first[0] && first[0].startsWith("http")) {
+    field.sourceUrl = first[0];
+    field.sourceTitle = first[1] || sourceTitle(first[0]);
+    field.checked = first[2] || row.checked || "";
+  } else {
+    field.sourceUrl = row.source_url;
+    field.sourceTitle = sourceTitle(row.source_url);
+    field.checked = row.checked || "";
+  }
+  if (parts.length > 1) {
+    const extra = parts.slice(1).map((part) => part.split("|")[1] || part.split("|")[0]).join("; ");
+    field.note = [field.note, `Also cited: ${extra}.`].filter(Boolean).join(" ");
+  }
+  return field;
+}
+
 function fieldList(row) {
   const fields = [];
   for (const [valueKey, statusKey, noteKey, label] of SPEC_FIELDS) {
@@ -61,34 +93,34 @@ function fieldList(row) {
     const value = (row[valueKey] || "").trim();
     if (!value) continue;
     if (isVerified(status)) {
-      fields.push({
+      fields.push(attachSource({
         key: valueKey,
         label,
         value,
         note: noteKey ? (row[noteKey] || "").trim() : "",
         status,
         conflict: /conflict|disagree/i.test(`${status} ${value} ${row[noteKey] || ""}`),
-      });
+      }, row));
     } else if (isConflictStatus(status)) {
-      fields.push({
+      fields.push(attachSource({
         key: valueKey,
         label,
         value,
-        note: "This cell is a conflict in the source. It is not published as a single figure.",
+        note: "Both quoted values are printed in the sources. They are not averaged.",
         status,
         conflict: true,
-      });
+      }, row));
     }
   }
-  if ((row.loader_model || "").trim() && isVerified(row.loader_status || "")) {
-    fields.push({
+  if ((row.loader_model || "").trim() && (isVerified(row.loader_status || "") || isConflictStatus(row.loader_status || ""))) {
+    fields.push(attachSource({
       key: "loader_model",
       label: "Loader model",
       value: row.loader_model.trim(),
       note: "",
       status: row.loader_status,
       conflict: false,
-    });
+    }, row));
   }
   return fields;
 }
@@ -175,7 +207,8 @@ function loadMaintenance(models) {
   }
   const byModel = new Map();
   for (const row of rows) {
-    if (!isVerified(row.status) || !(row.value || "").trim() || !(row.source_url || "").startsWith("http")) {
+    const publishable = isVerified(row.status) || isConflictStatus(row.status);
+    if (!publishable || !(row.value || "").trim() || !(row.source_url || "").startsWith("http")) {
       continue;
     }
     const key = `${slugify(row.brand)}/${slugify(row.model)}`;
@@ -214,7 +247,7 @@ function loadComparisons(modelByKey) {
       });
     const models = keys.map((key) => modelByKey.get(key)).filter(Boolean);
     if (models.length !== keys.length || models.length < 1) continue;
-    const verified = models.every((model) => model.fields.some((field) => field.key === "pto_hp" || field.key === "hitch"));
+    const verified = models.every((model) => model.fields.some((field) => field.key === "pto_hp" || field.key === "hitch" || field.key === "engine_hp"));
     if (!verified) continue;
     pages.push({
       slug: row.slug,

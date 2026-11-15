@@ -8,18 +8,19 @@ const tractors = catalog.models
   .map((model) => ({
     id: `${model.brandSlug}/${model.slug}`,
     label: `${model.brand} ${model.name}`,
-    pto: model.fields.find((field) => field.key === "pto_hp").value,
-    ptoNote: model.fields.find((field) => field.key === "pto_hp").note,
-    hitch: model.fields.find((field) => field.key === "hitch").value,
+    pto: model.fields.find((field) => field.key === "pto_hp")?.value || "",
+    ptoNote: model.fields.find((field) => field.key === "pto_hp")?.note || "",
+    hitch: model.fields.find((field) => field.key === "hitch")?.value || "",
     sourceUrl: model.sourceUrl,
     sourceTitle: model.sourceTitle,
     checked: model.checked,
   }));
-const attachments = catalog.products.map((product) => ({
-  id: product.slug,
-  label: `${product.maker} ${product.name}`,
-  range: product.hpRange,
-  hitch: product.hitch,
+const attachments = catalog.products  .map((product) => ({
+    id: product.slug,
+    label: `${product.maker} ${product.name}`,
+    range: product.hpRange,
+    width: product.width,
+    hitch: product.hitch,
   sourceUrl: product.sourceUrl,
   sourceTitle: product.sourceTitle,
   checked: product.checked,
@@ -71,13 +72,15 @@ const payload = JSON.stringify({ tractors, attachments }).replaceAll("<", "\\u00
       const pattern = /(\d+(?:\.\d+)?)\s*(?:hp)?\s*\([^)]{0,24}kw\)/gi;
       let match;
       while ((match = pattern.exec(text))) found.push(Number(match[1]));
-      return found;
+      if (found.length) return found;
+      return [...text.matchAll(/\d+(?:\.\d+)?/g)].map((item) => Number(item[0])).filter((item) => item > 0 && item < 200);
     }
 
     function hitchClass(text) {
       const value = text.toLowerCase();
+      if (value.includes("limited") && /\band\b/.test(value) && /cat/.test(value)) return "limited-or-cat1";
       if (value.includes("limited")) return "limited";
-      if (/1\s*\/\s*2|i\s*(&|and)\s*ii|1\s+and\s+2/.test(value)) return "both";
+      if (/1\s*\/\s*2|i\s*(&|and)\s*ii|1\s+and\s+2|cat\s*1\s*\/\s*cat\s*2/.test(value)) return "both";
       if (/cat(?:egory)?\.?\s*(ii|2)\b/.test(value) && !/1/.test(value)) return "cat2";
       if (/cat(?:egory)?\.?\s*(i|1)\b/.test(value)) return "cat1";
       return "unknown";
@@ -85,10 +88,22 @@ const payload = JSON.stringify({ tractors, attachments }).replaceAll("<", "\\u00
 
     function hitchCompatible(tractor, attachment) {
       if (tractor === "unknown" || attachment === "unknown" || tractor === "limited") return false;
+      if (tractor === "limited-or-cat1" || attachment === "limited-or-cat1") {
+        const other = tractor === "limited-or-cat1" ? attachment : tractor;
+        return other === "cat1" || other === "limited" || other === "both" || other === "limited-or-cat1";
+      }
       if (tractor === "both" || attachment === "both") {
         return tractor !== "unknown" && attachment !== "unknown" && tractor !== "limited";
       }
       return tractor === attachment;
+    }
+
+    function publishedRange(text) {
+      const span = text.match(/(\d+(?:\.\d+)?)\s*[-–]\s*(\d+(?:\.\d+)?)/);
+      if (span) return [Number(span[1]), Number(span[2])];
+      const ceiling = text.match(/up to\s*(\d+(?:\.\d+)?)/i);
+      if (ceiling) return [0, Number(ceiling[1])];
+      return null;
     }
 
     form.addEventListener("submit", (event) => {
@@ -98,18 +113,18 @@ const payload = JSON.stringify({ tractors, attachments }).replaceAll("<", "\\u00
       let verdict = "cannot tell";
       if (tractor && attachment) {
         const conflicted = /conflict|disagree/i.test(`${tractor.pto} ${tractor.ptoNote}`);
-        const range = attachment.range.match(/(\d+(?:\.\d+)?)\s*[-–]\s*(\d+(?:\.\d+)?)/);
-        const ptos = numbersBeforeKw(tractor.pto);
-        if (!conflicted && range && ptos.length && hitchCompatible(hitchClass(tractor.hitch), hitchClass(attachment.hitch))) {
-          const low = Number(range[1]);
-          const high = Number(range[2]);
-          if (ptos.every((pto) => pto >= low && pto <= high)) verdict = "inside the published range";
+        const range = publishedRange(attachment.range || "");
+        const ptos = tractor.pto ? numbersBeforeKw(tractor.pto) : [];
+        if (!conflicted && range && ptos.length && tractor.hitch && attachment.hitch && hitchCompatible(hitchClass(tractor.hitch), hitchClass(attachment.hitch))) {
+          if (ptos.every((pto) => pto >= range[0] && pto <= range[1])) verdict = "inside the published range";
         }
       }
       const lines = [
         verdict,
         tractor ? `Tractor source: ${tractor.sourceTitle}, checked ${tractor.checked}.` : "",
         attachment ? `Attachment source: ${attachment.sourceTitle}, checked ${attachment.checked}.` : "",
+        attachment && attachment.width ? `Published width: ${attachment.width}.` : "",
+        attachment && attachment.range ? `Published horsepower range: ${attachment.range}.` : "",
       ];
       out.textContent = lines.filter(Boolean).join(" ");
     });

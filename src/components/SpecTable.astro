@@ -6,6 +6,9 @@ interface Field {
   note: string;
   status: string;
   conflict: boolean;
+  sourceUrl?: string;
+  sourceTitle?: string;
+  checked?: string;
 }
 interface Props { fields: Field[] }
 const { fields } = Astro.props;
@@ -20,6 +23,9 @@ const liftKeys = new Set(["rear_lift_lb", "loader_lift_lb"]);
         <td>
           <p>{field.value}</p>
           {field.note && <p>{field.note}</p>}
+          {field.sourceUrl && (
+            <p class="source">Source: <a href={field.sourceUrl}>{field.sourceTitle}</a>{field.checked ? `. Checked ${field.checked}` : ""}.</p>
+          )}
           {liftKeys.has(field.key) && (
             <p>Lift and loader figures are the published number at the stated measurement point. They are not pallet-fork capacity and not a ballast instruction.</p>
           )}
